@@ -22,22 +22,22 @@ var Video = {
 		  .catch(err => console.log("An error occured! " + err));
 
 		// Notify DOM when video actually begins playing
-		Video.video.addEventListener('canplay', function(ev){
+		Video.video.addEventListener('canplay', function(ev) {
 		  if (!Video.streaming) {
-			Video.height = Video.video.videoHeight / (Video.video.videoWidth/Video.width);
+  			Video.height = Video.video.videoHeight / (Video.video.videoWidth/Video.width);
 
-			Video.video.setAttribute('width', Video.width);
-			Video.video.setAttribute('height', Video.height);
-			Video.canvas.setAttribute('width', Video.width);
-			Video.canvas.setAttribute('height', Video.height);
-			Video.streaming = true;
+  			Video.video.setAttribute('width', Video.width);
+  			Video.video.setAttribute('height', Video.height);
+  			Video.canvas.setAttribute('width', Video.width);
+  			Video.canvas.setAttribute('height', Video.height);
+  			Video.streaming = true;
 
-			setInterval(() => Video.processImage(), 200);
+  			setInterval(() => Video.processImage(), 200);
 		  }
 		}, false);
 	},
 
-	getBase64Image : function() {
+	processImage : function() {
 		Video.ctx = Video.canvas.getContext('2d');
 
 		if (Video.width && Video.height) {
