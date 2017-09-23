@@ -9,7 +9,7 @@ const compression = require('compression');
 
 // Enable hiding of sensitive information
 require('dotenv').config();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8000;
 
 //  Connect all our routes to our application
 app.use(compression());
