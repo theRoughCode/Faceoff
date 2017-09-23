@@ -13,6 +13,7 @@ firebase.initializeApp(config);
 
 var db = firebase.database();
 var roomsRef = db.ref('rooms');
+var playersRef = db.ref('players');
 
 /*
  * roomId: {{ hostName: *, players: { sessionId: { playerName: *, playerScore: *, isHost: * }} }}
@@ -30,7 +31,7 @@ function setHost(roomId, hostData, callback) {
       "isHost": true
     };
     return callback(roomsRef.child(`${roomId}/players/${hostData.sessionId}`).set(data));
-  })
+  });
 }
 
 /*

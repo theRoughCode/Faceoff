@@ -134,6 +134,8 @@ function playerJoinGame(data) {
         // Emit an event notifying the clients that the player has joined the room.
         io.sockets.in(data.gameId).emit('playerJoinedRoom', data);
 
+        database.addPlayer(data.gameId, data.playerName, 0, data.mySocketId);
+
     } else {
         // Otherwise, send an error message back to the player.
         this.emit('errorMsg',{message: "This room does not exist."} );

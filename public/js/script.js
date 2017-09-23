@@ -1,4 +1,4 @@
-const MAXPLAYERSPERROOM = 1;
+const MAXPLAYERSPERROOM = 3;
 
 var Video = {
   width : 320,    // We will scale the photo width to this
@@ -356,9 +356,6 @@ var App = {
                 .appendChild(newP)
                 .innerHTML = 'Player ' + data.playerName + ' joined the game.';
 
-            // Store the new player's data on the Host.
-            App.players.push(data);
-
             // Increment the number of players in the room
             App.Host.numPlayersInRoom += 1;
 
@@ -539,9 +536,6 @@ var App = {
             if(IO.socket.id === data.mySocketId){
                 App.myRole = 'Player';
                 App.gameId = data.gameId;
-
-                // Store the new player's data on the Host.
-                App.players.push(data);
 
                 document.getElementById('btnStart').style.display = 'none';
                 var p = document.createElement('P');
