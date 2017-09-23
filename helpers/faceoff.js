@@ -1,3 +1,5 @@
+const database = require('./database');
+
 var io;
 var gameSocket;
 
@@ -17,6 +19,7 @@ exports.initGame = function(sio, socket){
     gameSocket.on('hostRoomFull', hostPrepareGame);
     gameSocket.on('hostCountdownFinished', hostStartGame);
     //gameSocket.on('hostNextRound', hostNextRound);
+    gameSocket.on('addRoom', addRoom);
 
     // Player Events
     gameSocket.on('playerJoinGame', playerJoinGame);
@@ -32,9 +35,10 @@ exports.initGame = function(sio, socket){
    ******************************* */
 
 /**
- * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
+ * The 'Host Game' button was clicked and 'hostCreateNewGame' event occurred.
  */
-function hostCreateNewGame() {
+function hostCreateNewGame(data) {
+    console.log(`Host ${data.hostName} has created a new lobby!`);
     // Create a unique Socket.IO Room
     var thisGameId = ( Math.random() * 100000 ) | 0;
 
@@ -50,9 +54,8 @@ function hostCreateNewGame() {
  * @param gameId The game ID / room ID
 */
 function hostPrepareGame(gameId) {
-    var sock = this;
     var data = {
-        mySocketId : sock.id,
+        mySocketId : this.id,
         gameId : gameId
     };
     console.log("All Players Present. Preparing game...");
@@ -65,9 +68,9 @@ function hostPrepareGame(gameId) {
  */
 function hostStartGame(gameId) {
     console.log('Game Started.');
-    var url = 'https://www.youtube.com/watch?v=brRmuRYkJ9c';
+    var url = 'https://www.youtube.com/embed/brRmuRYkJ9c';
     var data = {
-        mySocketId : sock.id,
+        mySocketId : this.id,
         gameId : gameId,
         url : url
     };
@@ -86,6 +89,15 @@ function hostNextRound(data) {
         // If the current round exceeds the number of words, send the 'gameOver' event.
         io.sockets.in(data.gameId).emit('gameOver',data);
     }
+}
+
+/**
+ * Add new room to database
+ * @param data Sent from the client. Contains the room and host info
+ * { gameId : *, playerName : *, sessionId : * }
+ */
+function addRoom(data) {
+    database.addRoom(data.gameId, data.playerName, 0, data.sessionId);
 }
 
 /* *****************************
