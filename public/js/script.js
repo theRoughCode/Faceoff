@@ -31,7 +31,7 @@ var Video = {
         Video.canvas.setAttribute('height', Video.height);
         Video.streaming = true;
 
-        setInterval(() => Video.getBase64Image(), 200);
+        setInterval(() => console.log(Video.getBase64Image()), 200);
       }
     }, false);
   },
@@ -61,7 +61,7 @@ var IO = {
      * to the Socket.IO server
      */
     init : function() {
-        IO.socket = io();
+        IO.socket = io('http://35.0.134.49:8080');
         IO.bindEvents();
     },
 
@@ -70,13 +70,13 @@ var IO = {
      * by the Socket.IO server, then run the appropriate function.
      */
     bindEvents : function() {
-        IO.socket.on('connected', IO.onConnected );
-        IO.socket.on('newGameCreated', IO.onNewGameCreated );
-        //IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
-        IO.socket.on('beginNewGame', IO.beginNewGame );
+        IO.socket.on('connected', IO.onConnected);
+        IO.socket.on('errorMsg', IO.error);
+        IO.socket.on('newGameCreated', IO.onNewGameCreated);
+        IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
+        IO.socket.on('beginNewGame', IO.beginNewGame);
         IO.socket.on('playVideo', IO.playVideo);
         IO.socket.on('gameOver', IO.gameOver);
-        //IO.socket.on('error', IO.error );
     },
 
     /**
@@ -306,10 +306,13 @@ var App = {
             if ( App.Host.isNewGame ) {
                 App.Host.displayNewGameScreen();
             }
+
+            // TODO: Check if same user joins
             // Update host screen
+            var newP = document.createElement('P');
             document.querySelector('#playersWaiting')
-                .append('<p/>')
-                .text('Player ' + data.playerName + ' joined the game.');
+                .appendChild(newP)
+                .innerHTML = 'Player ' + data.playerName + ' joined the game.';
 
             // Store the new player's data on the Host.
             App.Host.players.push(data);
@@ -330,7 +333,7 @@ var App = {
          * Show the countdown screen
          */
         gameCountdown : function() {
-            const COUNTDOWNTIME = 5;s
+            const COUNTDOWNTIME = 5;
 
             // Prepare the game screen with new HTML
             App.gameArea.innerHTML = App.hostGame;
@@ -537,8 +540,9 @@ var App = {
                 App.myRole = 'Player';
                 App.gameId = data.gameId;
 
+                var p = document.createElement('P');
                 document.querySelector('#playerWaitingMessage')
-                    .append('<p/>')
+                    .appendChild(p)
                     .innerHTML = 'Joined Game ' + data.gameId + '. Please wait for game to begin.';
             }
         },

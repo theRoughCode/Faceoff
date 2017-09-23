@@ -107,9 +107,7 @@ function playerJoinGame(data) {
     var sock = this;
 
     // Look up the room ID in the Socket.IO manager object.
-    //TODO console.log(io.sockets.adapter.rooms);
-    //var room = io.sockets.adapter.rooms["/" + data.gameId];
-    //console.log(room);
+    var room = io.sockets.adapter.rooms[data.gameId];
 
     // If the room exists...
     if( room != undefined ){
@@ -126,7 +124,7 @@ function playerJoinGame(data) {
 
     } else {
         // Otherwise, send an error message back to the player.
-        this.emit('error',{message: "This room does not exist."} );
+        this.emit('errorMsg',{message: "This room does not exist."} );
     }
 }
 
