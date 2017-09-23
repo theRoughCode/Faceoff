@@ -1,20 +1,21 @@
-var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+// grab the packages we need
+const express = require('express');
+const app = express();
+const path = require('path');
+const routes = require('./routes');
 
-server.listen(80);
+// Enable hiding of sensitive information
+require('dotenv').config();
+const port = process.env.PORT || 8080;
 
-app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/index.html');
-});
+//  Connect all our routes to our application
+app.use('/', routes);
 
-io.on('connection', function (socket) {
-  socket.emit('news', { text: 'Hello world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-  socket.on('hello', function (data) {
-    console.log(data);
-    socket.emit('hello', data);
-  });
-});
+// Turn on that server!
+app.listen(port, () => console.log('Server started! At http://localhost:' + port));
+app.use(express.static(path.join(__dirname, '/')));
+app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/views')));
+
+// set the view engine to ejs
+app.set('view engine', 'ejs');

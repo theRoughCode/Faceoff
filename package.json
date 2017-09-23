@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.4",
-    "socket.io": "^2.0.3",
-    "vue": "^2.4.4"
+    "dotenv": "^4.0.0",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4"
   }
 }
