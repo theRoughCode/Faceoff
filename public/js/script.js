@@ -32,7 +32,7 @@ var Video = {
   			Video.canvas.setAttribute('height', Video.height);
   			Video.streaming = true;
 
-  			setInterval(() => Video.processImage(), 200);
+  			//setInterval(() => Video.processImage(), 200);
 		  }
 		}, false);
 	},
