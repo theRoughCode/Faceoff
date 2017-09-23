@@ -1,10 +1,78 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Face-off</title>
-  </head>
-  <body>
+	<head>
+		<meta charset="utf-8">
+		<title>Face-off</title>
 
-  </body>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+		<!-- Compressed CSS -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" />
+
+		<!-- Compressed JavaScript -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.min.js"></script>
+	</head>
+	<body>
+		<div id="fb-root"></div>
+		<!-- Snippet to set up Facebook SDK -->
+		<script>
+			window.fbAsyncInit = function() {
+				FB.init({
+					appId      : '207752326429628',
+					cookie     : true,
+					xfbml      : true,
+					version    : 'v2.10'
+				});
+				FB.AppEvents.logPageView();
+
+				FB.getLoginStatus(function(response) {
+					if (response.status === 'connected') {
+						var uid = response.authResponse.userID;
+						var accessToken = response.authResponse.accessToken;
+					} else if (response.status === 'not_authorized') {
+						console.log('User has logged into FB but not authorized app');
+					} else {
+						console.log('Something is wrong; not authorized');
+					}
+				});
+
+				FB.logout(function(response) {
+
+				});
+
+				FB.Event.subscribe('auth.login', function(response) {
+					console.log(response);
+				});
+			};
+
+			(function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) return;
+				js = d.createElement(s); js.id = id;
+				js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=207752326429628";
+				fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+
+			function login() {
+				FB.login(function(response) {
+					if (response.status === 'connected') {
+						console.log(response.authResponse.accessToken);
+						document.getElementById('fb-btn').style.display = 'none';
+					} else {
+						console.log('Not authenicated');
+					}
+				});
+			}
+			function checkLoginState() {
+				FB.getLoginStatus(function(response) {
+					statusChangeCallback(response);
+				});
+			}
+		</script>
+
+		<!-- FB Login Button -->
+		<section class="float-center">
+			<fb:login-button id="fb-btn" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></fb:login-button>
+
+		</section>
+	</body>
 </html>
