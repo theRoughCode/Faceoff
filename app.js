@@ -34,8 +34,8 @@ app.use(express.static(path.join(__dirname, '/views')));
 app.set('view engine', 'ejs');
 
 // Turn on that server!
-var pkey = fs.readFileSync('server.key', 'utf8');
-var cert = fs.readFileSync('server.crt', 'utf8');
+var pkey = fs.readFileSync('./../server.key', 'utf8');
+var cert = fs.readFileSync('./../server.crt', 'utf8');
 var cred = {key: pkey, cert: cert};
 const server = http.createServer(app).listen(port, () => console.log('Server started! At port:' + port));
 const s2 = hs.createServer(cred, app).listen(p2, () => console.log('Https Server listening on:' + p2));
