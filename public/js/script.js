@@ -1,4 +1,4 @@
-const MAXPLAYERSPERROOM = 3;
+const MAXPLAYERSPERROOM = 1;
 
 var Video = {
   width : 320,    // We will scale the photo width to this
@@ -9,7 +9,7 @@ var Video = {
   ctx : null,
 
   startup : function() {
-    Video.video = document.getElementById('video');
+    Video.video = document.getElementById('webcam');
     Video.canvas = document.getElementById('canvas');
 
     // Get media stream
@@ -31,7 +31,7 @@ var Video = {
         Video.canvas.setAttribute('height', Video.height);
         Video.streaming = true;
 
-        setInterval(() => console.log(Video.getBase64Image()), 200);
+        //setInterval(() => console.log(Video.getBase64Image()), 200);
       }
     }, false);
   },
@@ -61,7 +61,7 @@ var IO = {
      * to the Socket.IO server
      */
     init : function() {
-        IO.socket = io('http://35.0.134.49:8080');
+        IO.socket = io();
         IO.bindEvents();
     },
 
@@ -101,11 +101,11 @@ var IO = {
      * @param data {{playerName: string, gameId: int, mySocketId: int}}
      */
     playerJoinedRoom : function(data) {
-        // When a player joins a room, do the updateWaitingScreen funciton.
+        // When a player joins a room, do the updateWaitingScreen function.
         // There are two versions of this function: one for the 'host' and
         // another for the 'player'.
         //
-        // So on the 'host' browser window, the App.Host.updateWiatingScreen function is called.
+        // So on the 'host' browser window, the App.Host.updateWaitingScreen function is called.
         // And on the player's browser, App.Player.updateWaitingScreen is called.
         App[App.myRole].updateWaitingScreen(data);
     },
@@ -115,7 +115,7 @@ var IO = {
      * @param data
      */
     beginNewGame : function(data) {
-        App[App.myRole].gameCountdown(data);
+        App.Player.gameCountdown(data);
     },
 
     /**
@@ -126,8 +126,8 @@ var IO = {
         // Update the current round
         App.currentRound = data.round;
 
-        // Change the word for the Host and Player
-        App[App.myRole].loadVideo(data);
+        // Load the video for the Host and Player
+        App.Player.loadVideo(data);
     },
 
     /**
@@ -173,6 +173,11 @@ var App = {
     myRole: '',   // 'Player' or 'Host'
 
     /**
+     * Contains references to player data
+     */
+    players : [],
+
+    /**
      * The Socket.IO socket object identifier. This is unique for
      * each player and host. It is generated when the browser initially
      * connects to the server when the page loads for the first time.
@@ -205,9 +210,10 @@ var App = {
         // Templates
         App.gameArea = document.querySelector('#gameArea');
         App.templateIntroScreen = document.querySelector('#intro-screen-template').innerHTML;
-        App.templateNewGame = document.querySelector('#create-game-template').innerHTML;
+        App.templateNewGame = document.querySelector('#create-game-template-1').innerHTML;
+        App.templateHostGame = document.querySelector('#create-game-template-2').innerHTML;
         App.templateJoinGame = document.querySelector('#join-game-template').innerHTML;
-        App.hostGame = document.querySelector('#host-game-template').innerHTML;
+        App.gameDisplay = document.querySelector('#game-template').innerHTML;
     },
 
     /**
@@ -238,11 +244,10 @@ var App = {
        *         HOST CODE           *
        ******************************* */
     Host : {
-
         /**
          * Contains references to player data
          */
-        players : [],
+        myName : '',
 
         /**
          * Flag to indicate if a new game is starting.
@@ -265,8 +270,7 @@ var App = {
          * Handler for the "Start" button on the Title Screen.
          */
         onCreateClick: function () {
-            // console.log('Clicked "Create A Game"');
-            IO.socket.emit('hostCreateNewGame');
+            App.Host.displayNewGameScreen();
         },
 
         /**
@@ -279,16 +283,54 @@ var App = {
             App.myRole = 'Host';
             App.Host.numPlayersInRoom = 0;
 
-            App.Host.displayNewGameScreen();
-            console.log("Game started with ID: " + App.gameId + ' by host: ' + App.mySocketId);
+            // collect data to send to the server
+            var data = {
+                gameId : App.gameId,
+                playerName : App.Host.myName,
+                sessionId : App.mySocketId
+            };
+
+            App.Host.displayLobbyScreen();
+
+            // Send the host data
+            IO.socket.emit('addRoom', data);
+
+            console.log("Game started with ID: " + App.gameId + ' by host: ' + App.Host.myName);
         },
 
         /**
-         * Show the Host screen containing the game URL and unique game ID
+         * Set up new lobby
          */
         displayNewGameScreen : function() {
             // Fill the game screen with the appropriate HTML
             App.gameArea.innerHTML = App.templateNewGame;
+
+            document.querySelector('#btnHost').addEventListener('click', App.Host.onHostClick);
+        },
+
+        /*
+         *  Host lobby
+         */
+         onHostClick : function() {
+           // collect data to send to the server
+           var data = {
+               hostName : document.querySelector('#inputHostName').value || 'anon'
+           };
+
+           // Send the gameId and playerName to the server
+           IO.socket.emit('hostCreateNewGame', data);
+
+           // Set the appropriate properties for the current player.
+           App.myRole = 'Host';
+           App.Host.myName = data.hostName;
+         },
+
+        /**
+         * Show the Host screen containing the game URL and unique game ID
+         */
+        displayLobbyScreen : function() {
+            // Fill the game screen with the appropriate HTML
+            App.gameArea.innerHTML = App.templateHostGame;
 
             // Display the URL on screen
             document.querySelector('#gameURL').innerHTML = window.location.href;
@@ -315,59 +357,18 @@ var App = {
                 .innerHTML = 'Player ' + data.playerName + ' joined the game.';
 
             // Store the new player's data on the Host.
-            App.Host.players.push(data);
+            App.players.push(data);
 
             // Increment the number of players in the room
             App.Host.numPlayersInRoom += 1;
 
             // If two players have joined, start the game!
             if (App.Host.numPlayersInRoom === MAXPLAYERSPERROOM) {
-                // console.log('Room is full. Almost ready!');
+                console.log('Room is full. Almost ready!');
 
                 // Let the server know that two players are present.
-                IO.socket.emit('hostRoomFull',App.gameId);
+                IO.socket.emit('hostRoomFull', App.gameId);
             }
-        },
-
-        /**
-         * Show the countdown screen
-         */
-        gameCountdown : function() {
-            const COUNTDOWNTIME = 5;
-
-            // Prepare the game screen with new HTML
-            App.gameArea.innerHTML = App.hostGame;
-
-            // Begin the on-screen countdown timer
-            var secondsLeft = document.querySelector('#hostWord');
-            App.countDown( secondsLeft, COUNTDOWNTIME, function(){
-                IO.socket.emit('hostCountdownFinished', App.gameId);
-            });
-
-            // Display the players' names on screen
-            var player1Score = document.querySelector('#player1Score');
-            var player2Score = document.querySelector('#player2Score');
-
-            player1Score.querySelector('.playerName').innerHTML = App.Host.players[0].playerName;
-
-            player2Score.querySelector('.playerName').innerHTML = App.Host.players[1].playerName;
-
-            // Set the Score section on screen to 0 for each player.
-            player1Score.querySelector('.score').setAttribute('id',App.Host.players[0].mySocketId);
-            player2Score.querySelector('.score').setAttribute('id',App.Host.players[1].mySocketId);
-        },
-
-        /**
-         * Show the word for the current round on screen.
-         * @param data{{round: *, word: *, answer: *, list: Array}}
-         */
-        loadVideo : function(data) {
-            // Insert the new word into the DOM
-            document.querySelector('#video').innerHTML = data.url;
-
-            // Update the data for the current round
-            App.Host.currentCorrectAnswer = data.answer;
-            App.Host.currentRound = data.round;
         },
 
         /**
@@ -469,8 +470,6 @@ var App = {
          * Click handler for the 'JOIN' button
          */
         onJoinClick: function () {
-            // console.log('Clicked "Join A Game"');
-
             // Display the Join Game HTML on the player's screen.
             App.gameArea.innerHTML = App.templateJoinGame;
 
@@ -487,7 +486,8 @@ var App = {
             // collect data to send to the server
             var data = {
                 gameId : document.querySelector('#inputGameId').value,
-                playerName : document.querySelector('#inputPlayerName').value || 'anon'
+                playerName : document.querySelector('#inputPlayerName').value || 'anon',
+                isHost : false
             };
 
             // Send the gameId and playerName to the server
@@ -536,10 +536,14 @@ var App = {
          * @param data
          */
         updateWaitingScreen : function(data) {
-            if(IO.socket.sessionid === data.mySocketId){
+            if(IO.socket.id === data.mySocketId){
                 App.myRole = 'Player';
                 App.gameId = data.gameId;
 
+                // Store the new player's data on the Host.
+                App.players.push(data);
+
+                document.getElementById('btnStart').style.display = 'none';
                 var p = document.createElement('P');
                 document.querySelector('#playerWaitingMessage')
                     .appendChild(p)
@@ -552,17 +556,38 @@ var App = {
          * @param hostData
          */
         gameCountdown : function(hostData) {
+            const COUNTDOWNTIME = 5;
             App.Player.hostSocketId = hostData.mySocketId;
-            document.querySelector('#gameArea')
-                .innerHTML = '<div class="gameOver">Get Ready!</div>';
+
+            // Prepare the game screen with new HTML
+            App.gameArea.innerHTML = App.gameDisplay;
+
+            // Begin the on-screen countdown timer
+            var secondsLeft = document.querySelector('#timer');
+            App.countDown(secondsLeft, COUNTDOWNTIME, function(){
+                IO.socket.emit('hostCountdownFinished', App.gameId);
+            });
+
+            // Display the players' names on screen
+            var player1Score = document.querySelector('#player1Score');
+            var player2Score = document.querySelector('#player2Score');
+            player1Score.querySelector('.playerName').innerHTML = App.players[0].playerName;
+
+            player2Score.querySelector('.playerName').innerHTML = App.players[1].playerName;
+
+            // Set the Score section on screen to 0 for each player.
+            player1Score.querySelector('.score').setAttribute('id',App.players[0].mySocketId);
+            player2Score.querySelector('.score').setAttribute('id',App.players[1].mySocketId);
         },
 
         /**
          * Show the list of words for the current round.
-         * @param data{{mySocketId: *, gameId: *, urk: *}}
+         * @param data{{mySocketId: *, gameId: *, url: *}}
          */
         loadVideo : function(data) {
-            document.querySelector('#video').innerHTML = data.url;
+            const PREFERENCES = '?modestbranding=1&autoplay=1&disablekb=1&showinfo=0&controls=0';
+            // Insert the video into the DOM
+            document.querySelector('#video').setAttribute('src', data.url + PREFERENCES);
         },
 
         /**

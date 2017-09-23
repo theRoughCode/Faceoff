@@ -6,6 +6,8 @@
       <!-- Ensure that everything scales appropriately on a mobile device -->
       <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
+      <title>Face-Off</title>
+
       <!-- Let's borrow a cool looking Font from Google -->
       <link href='https://fonts.googleapis.com/css?family=Quicksand:300,400,700' rel='stylesheet' type='text/css'>
 
@@ -15,7 +17,7 @@
   <body>
 
     <div class="camera">
-      <video id="video">Video stream not available.</video>
+      <video id="webcam">Video stream not available.</video>
     </div>
     <canvas id="canvas" style="display: none;">
     </canvas>
@@ -44,7 +46,21 @@
       </script>
 
       <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
-      <script id="create-game-template" type="text/template">
+      <script id="create-game-template-1" type="text/template">
+          <div class="createGameWrapper">
+              <div class="info">
+                  <label for="inputHostName">Your Name:</label>
+                  <input id="inputHostName" type="text" />
+              </div>
+
+              <div class="info buttons">
+                  <button id="btnHost" class="btn">Host Game</button>
+              </div>
+          </div>
+      </script>
+
+      <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
+      <script id="create-game-template-2" type="text/template">
           <div class="createGameWrapper">
 
               <div class="info">Open this site on your mobile device:</div>
@@ -57,7 +73,7 @@
           </div>
       </script>
 
-      <!-- This scrreen appears when a player clicks "JOIN" on the Title Screen -->
+      <!-- This screen appears when a player clicks "JOIN" on the Title Screen -->
       <script id="join-game-template" type="text/template">
           <div class="joinGameWrapper">
               <div class="info">
@@ -78,9 +94,10 @@
       </script>
 
       <!-- This is the 'Host' screen. It displays the word for each player to match -->
-      <script id="host-game-template" type="text/template">
+      <script id="game-template" type="text/template">
           <div id="wordArea">
-              <div id="video">5</div>
+              <div id="timer">5</div>
+              <iframe id="video" src="https://www.youtube.com/embed/milyfLeE-3Y" frameborder="0" style="pointer-events: none;"></iframe>
           </div>
           <div id="playerScores">
               <div id="player1Score" class="playerScore">
