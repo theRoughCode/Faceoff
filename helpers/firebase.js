@@ -12,50 +12,115 @@ var config = {
 firebase.initializeApp(config);
 
 var db = firebase.database();
-var roomsRef = db.ref('rooms');
-var playersRef = db.ref('players');
-
 /*
  * roomId: {{ hostName: *, players: { sessionId: { playerName: *, playerScore: *, isHost: * }} }}
  */
+ var roomsRef = db.ref('rooms');
+
+ /*
+  * sessionId: {{ roomId: * }}
+  */
+ var playersRef = db.ref('players');
 
 /*
  * Set host by roomID
  * @param hostData {{ hostName: *, hostScore: *, sessionId: * }}
  */
 function setHost(roomId, hostData, callback) {
-  roomsRef.child(`${roomId}/hostName`).set(hostData.hostName).then(() => {
-    const data = {
-      "playerName": hostData.hostName,
-      "playerScore": hostData.hostScore,
-      "isHost": true
-    };
-    return callback(roomsRef.child(`${roomId}/players/${hostData.sessionId}`).set(data));
-  });
+  const data = {
+    "hostName": hostData.hostName,
+    "players": {},
+    "ranking": [{
+      "name": hostData.hostName,
+      "score": hostData.hostScore,
+      "sessionId": hostData.sessionId
+    }]
+  };
+  data.players[hostData.sessionId] = {
+    "playerName": hostData.hostName,
+    "playerScore": hostData.hostScore,
+    "isHost": true
+  };
+  return roomsRef.child(roomId).set(data);
 }
 
 /*
  * Set playerData by roomID
  * @param playerData {{ playerName: *, playerScore: *, sessionId: * }}
  */
-function setPlayer(roomId, playerData, callback) {
+function setPlayer(roomId, playerData) {
   const data = {
     "playerName": playerData.playerName,
     "playerScore": playerData.playerScore,
     "isHost": false
   };
-  return callback(roomsRef.child(`${roomId}/players/${playerData.sessionId}`).set(data));
+  return roomsRef.child(`${roomId}/players/${playerData.sessionId}`).set(data);
+}
+
+/*
+ * Retrieve player's room by sessionId
+ */
+function getPlayerRoom(sessionId) {
+  return playersRef.child(sessionId).once('value');
+}
+
+/*
+ * Set player's room' by sessionId
+ * @param sessionId
+ */
+function setPlayerRoom(roomId, sessionId) {
+  return playersRef.child(sessionId).set(roomId);
+}
+
+/*
+ * Set playerScore by roomID, playerId
+ * @param playerData {{ playerName: *, playerScore: *, sessionId: * }}
+ */
+function setPlayerScore(roomId, playerData) {
+  return roomsRef.child(`${roomId}/players/${playerData.sessionId}/playerScore`).set(playerData.playerScore);
+}
+
+/*
+ * Retrieve rankings by roomId
+ */
+function getRanking(roomId) {
+  return roomsRef.child(`${roomId}/ranking`).once('value');
+}
+
+/*
+ * Set ranking by roomID
+ * @param ranking [{ name : *, score : * }]
+ */
+function setRanking(roomId, ranking) {
+  return roomsRef.child(`${roomId}/ranking`).set(ranking);
+}
+
+/*
+ * Add player and their room
+ */
+function addPlayer(sessionId, roomId) {
+  return playersRef.child(sessionId).set(roomId);
 }
 
 /*
  * Retrieve players by roomID
  */
-function getPlayers(roomId, callback) {
-  return roomsRef.child(`${roomId}/players`).once('value');
+function getPlayersList(roomId, callback) {
+  return callback(roomsRef.child(`${roomId}/players`).once('value'));
+}
+
+function removeRoom(roomID) {
+  roomsRef.child(`${roomId}`).set(null);
 }
 
 module.exports = {
   setHost,
   setPlayer,
-  getPlayers
+  setPlayerRoom,
+  setPlayerScore,
+  getPlayerRoom,
+  getPlayersList,
+  addPlayer,
+  getRanking,
+  setRanking
 }
