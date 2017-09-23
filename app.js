@@ -13,7 +13,7 @@ const port = process.env.PORT || 8080;
 
 //  Connect all our routes to our application
 app.use(compression());
-app.use(favicon(__dirname + 'resources/logo.ico'));
+app.use(favicon(__dirname + '/resources/logo.ico'));
 app.use(logger('dev'));
 app.use('/', routes);
 
