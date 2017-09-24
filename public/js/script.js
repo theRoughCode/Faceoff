@@ -156,6 +156,7 @@ var IO = {
 	 */
 	beginNewGame : function(data) {
 		App.Player.gameCountdown(data);
+		Video.startup();
 	},
 
 	/**
