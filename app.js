@@ -34,15 +34,15 @@ app.use(express.static(path.join(__dirname, '/views')));
 app.set('view engine', 'ejs');
 
 // Turn on that server!
-var pkey = fs.readFileSync('server.key', 'utf8');
-var cert = fs.readFileSync('server.crt', 'utf8');
-var cred = {key: pkey, cert: cert};
+// var pkey = fs.readFileSync('server.key', 'utf8');
+// var cert = fs.readFileSync('server.crt', 'utf8');
+// var cred = {key: pkey, cert: cert};
 const server = http.createServer(app).listen(port, () => console.log('Server started! At port:' + port));
-const s2 = hs.createServer(cred, app).listen(p2, () => console.log('Https Server listening on:' + p2));
+// const s2 = hs.createServer(cred, app).listen(p2, () => console.log('Https Server listening on:' + p2));
 
 // Create a Socket.IO server and attach it to the http server
 var io = sockio.listen(server);
-var ios = sockio.listen(s2);
+// var ios = sockio.listen(s2);
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {
@@ -50,7 +50,7 @@ io.sockets.on('connection', function (socket) {
     faceoff.initGame(io, socket);
 });
 
-ios.sockets.on('connection', function (socket) {
-    console.log('client connected');
-    faceoff.initGame(io, socket);
-});
+// ios.sockets.on('connection', function (socket) {
+//     console.log('client connected');
+//     faceoff.initGame(io, socket);
+// });
