@@ -8,7 +8,7 @@
     "http": "node bin/server.js",
     "https": "node bin/server2.js"
   },
-  "author": "Anubhav Srivastava, Corey Hornbeck, Paul Delgad, Raphael Koh",
+  "author": "Anubhav Srivastava, Corey Hornbeck, Paul Delgado, Raphael Koh",
   "license": "ISC",
   "dependencies": {
     "compression": "^1.7.0",
