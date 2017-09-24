@@ -1,4 +1,5 @@
 const database = require('./database');
+const async = require('async');
 
 var io;
 var gameSocket;
@@ -70,13 +71,22 @@ function hostPrepareGame(gameId) {
  */
 function hostStartGame(gameId) {
     database.getVideos(videos => {
-      var rand = Math.random() * videos.length;
-      var data = {
-          mySocketId : this.id,
-          gameId : gameId,
-          url : videos[rand]
-      };
-      io.sockets.in(data.gameId).emit('playVideo', data);
+      const vals = [];
+      async.forEachOf(videos, (url, key, callback) => {
+        vals.push(url);
+        callback();
+      }, err => {
+        if(err) console.error(err);
+        else {
+          var rand = Math.random() * vals.length;
+          var data = {
+              mySocketId : this.id,
+              gameId : gameId,
+              url : vals[Math.round(rand)]
+          };
+          io.sockets.in(data.gameId).emit('playVideo', data);
+        }
+      });
     });
 };
 
@@ -161,6 +171,7 @@ function playerJoinGame(data) {
  * @param data gameId, playerName, sessionId, elapsedTime (in seconds)
  */
 function playerSmiled(data) {
+  console.log(data);
     database.updateScore(data.gameId, data.playerName, data.elapsedTime / 10, data.sessionId);
 }
 

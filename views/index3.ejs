@@ -118,7 +118,7 @@
 
               <div class="info animated fadeIn">
                   <label for="inputGameId">Game ID:</label>
-                  <input id="inputGameId" type="text"/>
+                  <input type="number" id="inputGameId" type="text"/>
               </div>
 
               <div class="info buttons animated fadeIn">
@@ -167,10 +167,10 @@
     </div>
   </body>
   <!-- script.js is where all the client-side game logic -->
-  <script src="../public/js/script.js"></script>
   <script src="../public/js/what-input.js"></script>
   <script src="../public/js/foundation.min.js"></script>
   <script src="../public/js/custom_faceoff.js"></script>
+  <script src="../public/js/script.js"></script>
   <!-- Bodymovin script -->
   <script>
     var anim;
@@ -186,9 +186,7 @@
         path: 'json/data.json'
     };
     anim = bodymovin.loadAnimation(animData);
-
-    </script>
-  </body>
+  </script>
   <script>
     function statusChangeCallback(response) {
       console.log('statusChangeCallback');
