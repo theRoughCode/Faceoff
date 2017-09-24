@@ -55,27 +55,19 @@ var Video = {
   			Video.canvas.setAttribute('width', Video.width);
   			Video.canvas.setAttribute('height', Video.height);
   			Video.streaming = true;
-
-  			//setInterval(() => Video.processImage(), 200);
+  			setInterval(() => Video.processImage(), 200);
 		  }
 		}, false);
 	},
 
 	processImage : function() {
 		Video.ctx = Video.canvas.getContext('2d');
-
 		if (Video.width && Video.height) {
 			Video.canvas.width = Video.width;
 			Video.canvas.height = Video.height;
 			Video.ctx.drawImage(Video.video, 0, 0, Video.width, Video.height);
 
-			canvas.toBlob(function (blob) {
-				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?", true);
-				xhr.setRequestHeader("Content-Type","application/octet-stream");
-				xhr.setRequestHeader("Ocp-Apim-Subscription-Key","fbd1c861dad34cc6aa652e6fa30faa46");
-				xhr.send(blob);
-			});
+			canvas.toBlob(blob => Video.sendFrame(blob));
 		}
 	},
 
@@ -287,6 +279,8 @@ var App = {
      */
     showInitScreen: function() {
         App.gameArea.innerHTML = App.templateIntroScreen;
+
+				document.querySelector('#bodymovin');
     },
 
 		/**
