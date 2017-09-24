@@ -349,6 +349,7 @@ var App = {
 					img.src = `../../views/avatars/av${imgNum + 1}.png`;
 					li.appendChild(img);
 					list.appendChild(li);
+					list.appendChild(user.name);
 				}
 			});
     },
