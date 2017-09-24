@@ -43,7 +43,7 @@ function hostCreateNewGame(data) {
     var thisGameId = ( Math.random() * 100000 ) | 0;
 
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
-    this.emit('newGameCreated', {gameId: thisGameId, mySocketId: this.id});
+    this.emit('newGameCreated', {gameId: thisGameId, mySocketId: this.id, numPlayers: data.numPlayers});
 
     // Join the Room and wait for the players
     this.join(thisGameId.toString());
@@ -93,7 +93,7 @@ function hostStartGame(gameId) {
  * { gameId : *, playerName : *, sessionId : * }
  */
 function addRoom(data) {
-    database.addRoom(data.gameId, data.playerName, 0, data.sessionId);
+    database.addRoom(data.gameId, data.playerName, 0, data.sessionId, data.numPlayers);
 }
 
 /**

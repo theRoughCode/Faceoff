@@ -1,4 +1,3 @@
-const MAXPLAYERSPERROOM = 1;
 const THRESHOLD = 0.75;
 var intervalClearID; // bad but since setInterval what returns the ID, there's not much you can do
 
@@ -251,11 +250,16 @@ var App = {
      */
     mySocketId: '',
 
-    /**
+		/**
      * Identifies the current round. Starts at 0 because it corresponds
      * to the array of word data stored on the server.
      */
     currentRound: 0,
+
+		/**
+     * Identifies the nubmer of Players (2 - 5)
+     */
+    numPlayers: 0,
 
     /* *************************************
      *                Setup                *
@@ -487,13 +491,15 @@ var App = {
             App.gameId = data.gameId;
             App.mySocketId = data.mySocketId;
             App.myRole = 'Host';
-            App.Host.numPlayersInRoom = 0;
+            App.Host.numPlayersInRoom = 1;
+						App.numPlayers = parseInt(data.numPlayers);
 
             // collect data to send to the server
             var data = {
                 gameId : App.gameId,
                 playerName : App.Host.myName,
-                sessionId : App.mySocketId
+                sessionId : App.mySocketId,
+								numPlayers : App.numPlayers
             };
 
             App.Host.displayLobbyScreen();
@@ -519,8 +525,10 @@ var App = {
          */
          onHostClick : function() {
            // collect data to send to the server
+					 App.numPlayers = document.querySelector('#numPlayers').value;
            var data = {
-               hostName : document.querySelector('#inputHostName').value || 'anon'
+               hostName : document.querySelector('#inputHostName').value || 'anon',
+							 numPlayers : App.numPlayers
            };
 
            // Send the gameId and playerName to the server
@@ -565,8 +573,9 @@ var App = {
             // Increment the number of players in the room
             App.Host.numPlayersInRoom += 1;
 
+						console.log(App.Host.numPlayersInRoom === App.numPlayers);
             // If two players have joined, start the game!
-            if (App.Host.numPlayersInRoom === MAXPLAYERSPERROOM) {
+            if (App.Host.numPlayersInRoom === App.numPlayers) {
                 console.log('Room is full. Almost ready!');
 
                 // Let the server know that two players are present.

@@ -38,13 +38,14 @@ var db = admin.database();
 
 /*
  * Set host by roomID
- * @param hostData {sessionId : { hostName: *, hostScore: * }}
+ * @param hostData {sessionId : { hostName: *, hostScore: *, sessionId: *, numPlayers: * }}
  */
 function setHost(roomId, hostData, callback) {
   const data = {
     "hostName": hostData.hostName,
     "players": {},
-    "ranking": {}
+    "ranking": {},
+    "numPlayers": hostData.numPlayers
   };
   data.ranking[hostData.sessionId] = {
     "name": hostData.hostName,

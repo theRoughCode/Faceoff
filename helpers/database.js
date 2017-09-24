@@ -2,7 +2,7 @@ var firebase = require('./firebase');
 
 // TODO: deal with users leaving rooms
 
-function addRoom(roomId, hostName, hostScore, sessionId) {
+function addRoom(roomId, hostName, hostScore, sessionId, numPlayers) {
   firebase.getPlayerRoom(sessionId)
     .then(snapshot => {
         firebase.addPlayer(sessionId, roomId)
@@ -13,7 +13,8 @@ function addRoom(roomId, hostName, hostScore, sessionId) {
   firebase.setHost(roomId, {
     "hostName": hostName,
     "hostScore": hostScore,
-    "sessionId": sessionId
+    "sessionId": sessionId,
+    "numPlayers": numPlayers
   }).catch(err => console.error(`Failed to add host: ${hostName}`));
 }
 
