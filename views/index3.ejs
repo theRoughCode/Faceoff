@@ -203,41 +203,76 @@
   <script src="../public/js/foundation.min.js"></script>
   <script src="../public/js/custom_faceoff.js"></script>
   <script>
-  const users = [
-    {
-      name: 'Player 1',
-      score: 214,
-    },
-    {
-      name: 'Player 2',
-      score: 217,
-    },
-    {
-      name: 'Player 3',
-      score: 234,
-    },
-    {
-      name: 'Player 4',
-      score: 400,
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '207752326429628',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v2.10'
+      });
+      FB.AppEvents.logPageView();
+
+      FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') {
+          var uid = response.authResponse.userID;
+          var accessToken = response.authResponse.accessToken;
+        } else if (response.status === 'not_authorized') {
+          console.log('User has logged into FB but not authorized app');
+        } else {
+          console.log('Something is wrong; not authorized');
+        }
+      });
+
+      FB.logout(function(response) {
+
+      });
+
+      FB.Event.subscribe('auth.login', function(response) {
+        console.log(response);
+      });
+    };
+
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=207752326429628";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function reqListener() {
+      var data = JSON.parse(this.responseText);
+      console.log(data);
     }
-  ];
 
-  const scoreTable = document.querySelector('#scoreTable');
-  users.forEach((user, index) => {
-    var td1 = document.createElement('td');
-    td1.style["text-align"] = 'left';
-    td1.innerHTML = index + 1;
-    scoreTable.appendChild(td1);
+    function reqError(err) {
+      console.log('Fetch Error :-S', err);
+    }
 
-    var td2 = document.createElement('td');
-    td2.style["text-align"] = 'center';
-    td2.innerHTML = user.name;
-    scoreTable.appendChild(td2);
+    function login() {
+      FB.login(function(response) {
+        if (response.status === 'connected') {
+          console.log(response.authResponse.accessToken);
+          var fbConnected = new XMLHttpRequest();
+          fbConnected.onload = reqListener;
+          fbConnected.onError = reqError;
+          fbConnected.open('get', './fbconnected', true);
+          fbConnected.send();
+        } else {
+          console.log('Not authenicated');
+        }
+      });
+    }
 
-    var td3 = document.createElement('td');
-    td3.style["text-align"] = 'right';
-    td3.innerHTML = user.score;
-    scoreTable.appendChild(td3);
-  });
+    function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+    }
+    
+    var fb_logout = document.getElementById('logout-btn');
+    fb_logout.addEventListener('click', function() {
+      console.log('User is attempting to logout');
+    });
   </script>
 </html>
