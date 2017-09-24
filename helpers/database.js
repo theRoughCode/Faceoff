@@ -69,11 +69,23 @@ function updateScore(roomId, playerName, playerScore, sessionId) {
   }).catch(err => console.error(`Failed to eliminate ${playerName}.`));
 }
 
+function getVideos(callback) {
+  firebase.getVideos().then(snapshot => {
+    return callback(snapshot.val());
+  });
+}
+
+function addVideo(url) {
+  firebase.addVideo(url);
+}
+
 module.exports = {
   addRoom,
   addPlayer,
   getRanking,
   updateScore,
   listenToRanking,
-  updateScore
+  updateScore,
+  getVideos,
+  addVideo
 }

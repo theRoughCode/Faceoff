@@ -16,9 +16,9 @@ function handleResult(score) {
  *    after the API code downloads.
  */
 function onYouTubeIframeAPIReady() {
-	console.log("3");
+	console.log('url: ' + App.YT.url);
 	App.YT.player = new YT.Player('yt', {
-		videoId: '5sqPu-x-_tw',
+		videoId: App.YT.url,
 		events: {
 			'onReady': App.YT.onYtReady,
 			'onStateChange': App.YT.onYTStateChange
@@ -76,8 +76,10 @@ var Video = {
 				xhr.setRequestHeader("Content-Type","application/octet-stream");
 				xhr.setRequestHeader("Ocp-Apim-Subscription-Key","fbd1c861dad34cc6aa652e6fa30faa46");
 				xhr.send(blob);
+			}
+		}
+	}
 
-<<<<<<< HEAD
 	sendFrame : function(blob) {
 		var formData = new FormData();
 		formData.append("testblob", blob, "testblob");
@@ -95,33 +97,7 @@ var Video = {
 				}
 			}
 		};
-=======
-				xhr.onreadystatechange = function()
-				{
-					if (this.readyState == 4 && this.status == 200) {
-						// Typical action to be performed when the document is ready:
-						var res = JSON.parse(this.response);
->>>>>>> dcd812ca62802c7184a07973e1555b77bd1b57db
-
-						if (res.length && res[0]["scores"])
-						{
-							console.log(res[0]["scores"]["happiness"]);
-						}
-						else
-						{
-							console.log(res);
-						}
-					}
-					else
-					{
-						console.log("XHR failed. See below.");
-						console.log(this);
-					}
-				};
-			});
-		}
 	}
-};
 
 /**
 * All the code relevant to Socket.IO is collected in the IO namespace.
@@ -205,17 +181,7 @@ var IO = {
 
 		// Load the video for the Host and Player
 		//App.Player.loadVideo(data);
-		App.YT.loadYT();
-	},
-
-	/**
-	 * A player answered. If this is the host, check the answer.
-	 * @param data
-	 */
-	hostCheckAnswer : function(data) {
-		if(App.myRole === 'Host') {
-			App.Host.checkAnswer(data);
-		}
+		App.YT.loadYT(data.url);
 	},
 
 	/**
@@ -310,7 +276,6 @@ var App = {
         App.gameArea.innerHTML = App.templateIntroScreen;
     },
 
-<<<<<<< HEAD
 		/**
      * Populates score table with users
      */
@@ -370,14 +335,21 @@ var App = {
 	    started: false,
 
 			/**
+	     * true if video has been playing
+	     */
+	    url: '',
+
+			/**
 	     * Load YouTube player
 	     */
-	    loadYT: function() {
+	    loadYT: function(url) {
 				var tag = document.createElement('script');
 
 	      tag.src = "https://www.youtube.com/iframe_api";
 	      var firstScriptTag = document.getElementsByTagName('script')[0];
 	      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+				App.YT.url = url;
 
 				console.log("2");
 	    },
@@ -429,9 +401,6 @@ var App = {
 				IO.socket.emit('playerSmiled', data);
 	    }
 		},
-
-=======
->>>>>>> dcd812ca62802c7184a07973e1555b77bd1b57db
 
     /* *******************************
        *         HOST CODE           *

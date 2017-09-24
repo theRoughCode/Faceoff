@@ -69,14 +69,15 @@ function hostPrepareGame(gameId) {
  * @param gameId The game ID / room ID
  */
 function hostStartGame(gameId) {
-    console.log('Game Started.');
-    var url = 'https://www.youtube.com/embed/brRmuRYkJ9c';
-    var data = {
-        mySocketId : this.id,
-        gameId : gameId,
-        url : url
-    };
-    io.sockets.in(data.gameId).emit('playVideo', data);
+    database.getVideos(videos => {
+      var rand = Math.random() * videos.length;
+      var data = {
+          mySocketId : this.id,
+          gameId : gameId,
+          url : videos[rand]
+      };
+      io.sockets.in(data.gameId).emit('playVideo', data);
+    });
 };
 
 /**
