@@ -195,7 +195,9 @@
       postTokenReq.onload = reqListener;
       postTokenReq.onerror = reqError;
 
-      FB.api('/me/', function() {
+      var aKey = localStorage['accessToken'];
+
+      FB.api('/me/', function(response) {
         postTokenReq.open('get', './api/some.json', true);
         postTokenReq.send();
       });
