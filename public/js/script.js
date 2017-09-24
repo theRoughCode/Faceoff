@@ -172,12 +172,12 @@ var IO = {
 	},
 
 	/**		 	/**
-	 * Populate leaderboards		
-	 * @param data		
-	 */		
-	populateTable : function(players) {		
-		App.populateTable(players);		
-	},	
+	 * Populate leaderboards
+	 * @param data
+	 */
+	populateTable : function(players) {
+		App.populateTable(players);
+	},
 
 	/**
 	 * Plays video
@@ -272,6 +272,9 @@ var App = {
 
         // Player
         document.querySelector('#btnJoinGame').addEventListener('click', App.Player.onJoinClick);
+
+				// Quit
+				document.querySelector('#quit-btn').addEventListener('click', App.init);
     },
 
     /* *************************************
