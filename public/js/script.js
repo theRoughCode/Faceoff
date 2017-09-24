@@ -1,13 +1,11 @@
-const MAXPLAYERSPERROOM = 3;
+const MAXPLAYERSPERROOM = 1;
 const THRESHOLD = 0.75;
 var intervalClearID; // bad but since setInterval what returns the ID, there's not much you can do
 
 
-function handleResult(score)
-{
+function handleResult(score) {
 	console.log(score);
-	if (score > THRESHOLD)
-	{
+	if (score > THRESHOLD) {
 		console.log("You smiled!");
 		clearInterval(intervalClearID);
 	}
@@ -36,15 +34,15 @@ var Video = {
 		// Notify DOM when video actually begins playing
 		Video.video.addEventListener('canplay', function(ev) {
 		  if (!Video.streaming) {
-			Video.height = Video.video.videoHeight / (Video.video.videoWidth/Video.width);
+				Video.height = Video.video.videoHeight / (Video.video.videoWidth/Video.width);
 
-			Video.video.setAttribute('width', Video.width);
-			Video.video.setAttribute('height', Video.height);
-			Video.canvas.setAttribute('width', Video.width);
-			Video.canvas.setAttribute('height', Video.height);
-			Video.streaming = true;
+				Video.video.setAttribute('width', Video.width);
+				Video.video.setAttribute('height', Video.height);
+				Video.canvas.setAttribute('width', Video.width);
+				Video.canvas.setAttribute('height', Video.height);
+				Video.streaming = true;
 
-			intervalClearID = setInterval(() => {Video.processImage()}, 1000);
+				intervalClearID = setInterval(() => Video.processImage(), 1000);
 		  }
 		}, false);
 	},
@@ -57,10 +55,7 @@ var Video = {
 			Video.canvas.height = Video.height;
 			Video.ctx.drawImage(Video.video, 0, 0, Video.width, Video.height);
 
-			return canvas.toBlob(blob =>
-			{
-				Video.sendFrame(blob);
-			});
+			return canvas.toBlob(blob => Video.sendFrame(blob));
 		}
 	},
 
@@ -119,6 +114,7 @@ var IO = {
 		IO.socket.on('newGameCreated', IO.onNewGameCreated);
 		IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
 		IO.socket.on('beginNewGame', IO.beginNewGame);
+		IO.socket.on('populateTable', IO.populateTable);
 		IO.socket.on('playVideo', IO.playVideo);
 		IO.socket.on('gameOver', IO.gameOver);
 	},
@@ -160,6 +156,14 @@ var IO = {
 	 */
 	beginNewGame : function(data) {
 		App.Player.gameCountdown(data);
+	},
+
+	/**
+	 * Populate leaderboards
+	 * @param data
+	 */
+	populateTable : function(players) {
+		App.populateTable(players);
 	},
 
 	/**
@@ -285,22 +289,29 @@ var App = {
      * Populates score table with users
      */
     populateTable: function(users) {
+			console.log(users);
+			if (!users) return;
+
 			const scoreTable = document.querySelector('#scoreTable');
+			scoreTable.innerHTML = '<tr><th>Rank</th><th>Name</th><th>Score</th></tr>'
 			users.forEach((user, index) => {
+				var tr = document.createElement('tr');
 				var td1 = document.createElement('td');
 				td1.style["text-align"] = 'left';
 				td1.innerHTML = index + 1;
-				scoreTable.appendChild(td1);
+				tr.appendChild(td1);
 
 				var td2 = document.createElement('td');
 				td2.style["text-align"] = 'center';
 				td2.innerHTML = user.name;
-				scoreTable.appendChild(td2);
+				tr.appendChild(td2);
 
 				var td3 = document.createElement('td');
 				td3.style["text-align"] = 'right';
 				td3.innerHTML = user.score;
-				scoreTable.appendChild(td3);
+				tr.appendChild(td3);
+
+				scoreTable.appendChild(tr);
 			});
     },
 
@@ -628,15 +639,11 @@ var App = {
             });
 
             // Display the players' names on screen
-            var player1Score = document.querySelector('#player1Score');
-            var player2Score = document.querySelector('#player2Score');
-            player1Score.querySelector('.playerName').innerHTML = App.players[0].playerName;
-
-            player2Score.querySelector('.playerName').innerHTML = App.players[1].playerName;
+            //TODO
 
             // Set the Score section on screen to 0 for each player.
-            player1Score.querySelector('.score').setAttribute('id',App.players[0].mySocketId);
-            player2Score.querySelector('.score').setAttribute('id',App.players[1].mySocketId);
+						console.log(App.gameId);
+            IO.socket.emit('populateTable', App.gameId);
         },
 
         /**

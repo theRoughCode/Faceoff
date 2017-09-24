@@ -37,8 +37,8 @@ function addPlayer(roomId, playerName, playerScore, sessionId) {
   .catch(err => console.error(`Failed to add player: ${playerName}`));
 }
 
-function getPlayers(roomId, callback) {
-  firebase.getPlayers(roomId, promise => promise
+function getRanking(roomId, callback) {
+  firebase.getRanking(roomId, promise => promise
     .then(snapshot => {
       if (snapshot.val()) return callback(snapshot.val());
       else return callback(null);
@@ -57,6 +57,6 @@ function updateScore(roomId, playerName, playerScore, sessionId) {
 module.exports = {
   addRoom,
   addPlayer,
-  getPlayers,
+  getRanking,
   updateScore
 }
