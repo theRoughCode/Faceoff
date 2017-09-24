@@ -189,11 +189,11 @@
     </script>
   </body>
   <script>
-    function statusChangeCallback(res) {
+    function statusChangeCallback(response) {
       console.log(statusChangeCallback);
-      console.log(res);
+      console.log(response);
 
-      if (res.status === 'connected') {
+      if (response.status === 'connected') {
         var uid = response.authResponse.userID;
         var accessToken = response.authResponse.accessToken;
         testAPI();
