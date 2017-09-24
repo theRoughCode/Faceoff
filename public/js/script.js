@@ -1,7 +1,6 @@
-const MAXPLAYERSPERROOM = 3;
+const MAXPLAYERSPERROOM = 1;
 const THRESHOLD = 0.75;
 var intervalClearID; // bad but since setInterval what returns the ID, there's not much you can do
-
 
 function handleResult(score) {
 	console.log(score);
@@ -127,6 +126,7 @@ var IO = {
 		IO.socket.on('newGameCreated', IO.onNewGameCreated);
 		IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
 		IO.socket.on('beginNewGame', IO.beginNewGame);
+		IO.socket.on('populateTable', IO.populateTable);
 		IO.socket.on('playVideo', IO.playVideo);
 		IO.socket.on('gameOver', IO.gameOver);
 	},
@@ -170,6 +170,14 @@ var IO = {
 		App.Player.gameCountdown(data);
 		Video.startup();
 	},
+
+	/**		 	/**
+	 * Populate leaderboards		
+	 * @param data		
+	 */		
+	populateTable : function(players) {		
+		App.populateTable(players);		
+	},	
 
 	/**
 	 * Plays video
@@ -726,16 +734,7 @@ var App = {
                 IO.socket.emit('hostCountdownFinished', App.gameId);
             });
 
-            // Display the players' names on screen
-            var player1Score = document.querySelector('#player1Score');
-            var player2Score = document.querySelector('#player2Score');
-            player1Score.querySelector('.playerName').innerHTML = App.players[0].playerName;
-
-            player2Score.querySelector('.playerName').innerHTML = App.players[1].playerName;
-
-            // Set the Score section on screen to 0 for each player.
-            player1Score.querySelector('.score').setAttribute('id',App.players[0].mySocketId);
-            player2Score.querySelector('.score').setAttribute('id',App.players[1].mySocketId);
+						setTimeout(() => IO.socket.emit('populateTable', App.gameId), 500);
         },
 
         /**
