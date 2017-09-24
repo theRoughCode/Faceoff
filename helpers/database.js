@@ -47,12 +47,14 @@ function getRanking(roomId, callback) {
 }
 
 function listenToRanking(roomId, callback) {
-  firebase.listenToRanking(roomId)
-    .then(snapshot => {
-      if (snapshot.val()) return callback(snapshot.val());
-      else return callback(null);
-    })
-    .catch(err => console.error(`Failed to get players.`));
+  firebase.listenToRanking(roomId, players => {
+    if(!players) return null;
+    players.sort((a, b) => {
+      return ((a.score < b.score) ? 1 :
+             (a.score > b.score) ? -1 : 0);
+    });
+    return callback(players);
+  });
 }
 
 function updateScore(roomId, playerName, playerScore, sessionId) {

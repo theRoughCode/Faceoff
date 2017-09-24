@@ -290,7 +290,7 @@ var App = {
      */
     populateTable: function(users) {
 			if (!users) return;
-
+			console.log(users);
 			const scoreTable = document.querySelector('#scoreTable');
 			scoreTable.innerHTML = '<tr><th>Rank</th><th>Name</th><th>Score</th></tr>'
 			users.forEach((user, index) => {

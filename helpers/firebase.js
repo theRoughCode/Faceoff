@@ -1,17 +1,26 @@
-var firebase = require("firebase");
+const admin = require('firebase-admin');
 
-// Initialize Firebase
-var config = {
-  apiKey: "AIzaSyAxizNRcmQSL3IcXVzQTctSGO17o4CwaSQ",
-  authDomain: "faceoff-1.firebaseapp.com",
-  databaseURL: "https://faceoff-1.firebaseio.com",
-  projectId: "faceoff-1",
-  storageBucket: "",
-  messagingSenderId: "786169093542"
-};
-firebase.initializeApp(config);
+// Enable hiding of sensitive information
+require('dotenv').config();
 
-var db = firebase.database();
+var serviceAccount = {};
+serviceAccount["type"] = process.env.TYPE;
+serviceAccount["project_id"] = process.env.PROJECT_ID;
+serviceAccount["private_key_id"] = process.env.PRIVATE_KEY_ID;
+serviceAccount["private_key"] = process.env.PRIVATE_KEY;
+serviceAccount["client_email"] = process.env.CLIENT_EMAIL;
+serviceAccount["client_id"] = process.env.CLIENT_ID;
+serviceAccount["auth_uri"] = process.env.AUTH_URI;
+serviceAccount["token_uri"] = process.env.TOKEN_URI;
+serviceAccount["auth_provider_x509_cert_url"] = process.env.FIREBASE_AUTH_CERT;
+serviceAccount["client_x509_cert_url"] = process.env.FIREBASE_CLIENT_CERT;;
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
+});
+
+var db = admin.database();
 /*
  * roomId: {{ hostName: *, players: { sessionId: { playerName: *, playerScore: *, isHost: * }} }}
  */
@@ -99,8 +108,10 @@ function setRanking(roomId, ranking) {
  * Listen to ranking by roomID
  * @param roomId
  */
-function listenToRanking(roomId) {
-  return roomsRef.on('child_changed');
+function listenToRanking(roomId, callback) {
+  roomsRef.child(`${roomId}/ranking`).on('value', snapshot => {
+    return callback(snapshot.val());
+  });
 }
 
 /*

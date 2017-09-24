@@ -10,9 +10,6 @@ const compression = require('compression');
 // Import the Anagrammatix game file.
 var faceoff = require('./helpers/faceoff');
 
-// Enable hiding of sensitive information
-require('dotenv').config();
-
 //  Connect all our routes to our application
 //app.all('*', ensureSecure);
 app.use(compression());
