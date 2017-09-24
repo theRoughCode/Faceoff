@@ -130,7 +130,6 @@
             <canvas id="canvas" style="display: none;">
             </canvas>
             <div id="yt" style="pointer-events: none;">
-              <iframe id="video" src="https://www.youtube.com/embed/5sqPu-x-_tw" frameborder="0"></iframe>
             </div>
 
             <div class="flex-child-auto align-stretch" style="">
@@ -152,9 +151,9 @@
             <div id="bodymovin"></div>
               <div class="titleWrapper">
                 <div class="title" style="margin-bottom: 40px;">
-                  <p class="animated fadeInUp" id="description2" style="font-size: 30px;">1st Place</p>
-                  <p class="animated fadeInUp" id="description1" style="font-size: 25px;">2nd Place</p>
-                  <p class="animated fadeInUp" id="description3" style="font-size: 22px;">3rd Place</p>
+                  <p class="animated fadeInUp" id="description2" style="font-size: 30px;"></p>
+                  <p class="animated fadeInUp" id="description1" style="font-size: 25px;"></p>
+                  <p class="animated fadeInUp" id="description3" style="font-size: 22px;"></p>
                 </div>
                 <div class="buttons">
                     <button id="btnMainMenu" class="btn left animated fadeInLeft">Main Menu</button>
@@ -198,7 +197,7 @@
       if (response.status === 'connected') {
         var uid = response.authResponse.userID;
         var accessToken = response.authResponse.accessToken;
-        //console.log(accessToken);
+        localStorage['accessToken'] = JSON.stringify(accessToken);
         testAPI();
       } else if (response.status === 'not_authorized') {
         console.log('User has logged into FB but not authorized app');
