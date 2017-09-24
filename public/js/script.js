@@ -573,9 +573,9 @@ var App = {
             // Increment the number of players in the room
             App.Host.numPlayersInRoom += 1;
 
-						console.log(App.Host.numPlayersInRoom === App.numPlayers);
+						console.log(parseInt(App.Host.numPlayersInRoom) === parseInt(App.numPlayers));
             // If two players have joined, start the game!
-            if (App.Host.numPlayersInRoom === App.numPlayers) {
+            if (parseInt(App.Host.numPlayersInRoom) === parseInt(App.numPlayers)) {
                 console.log('Room is full. Almost ready!');
 
                 // Let the server know that two players are present.
