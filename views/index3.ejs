@@ -196,7 +196,7 @@
       if (response.status === 'connected') {
         var uid = response.authResponse.userID;
         var accessToken = response.authResponse.accessToken;
-        console.log(accessToken);
+        //console.log(accessToken);
         testAPI();
       } else if (response.status === 'not_authorized') {
         console.log('User has logged into FB but not authorized app');
@@ -250,11 +250,11 @@
       FB.login(function(response) {
         if (response.status === 'connected') {
           console.log(response.authResponse.accessToken);
-          var fbConnected = new XMLHttpRequest();
-          fbConnected.onload = reqListener;
-          fbConnected.onError = reqError;
-          fbConnected.open('get', './fbconnected', true);
-          fbConnected.send();
+          //var fbConnected = new XMLHttpRequest();
+          //fbConnected.onload = reqListener;
+          //fbConnected.onError = reqError;
+          //fbConnected.open('get', './fbconnected', true);
+          //fbConnected.send();
         } else {
           console.log('Not authenicated');
         }
@@ -263,6 +263,10 @@
 
     function testAPI() {
       console.log('testAPI');
+      FB.api('/me', function(response) {
+        console.log('Successful login for: ' + response.name);
+
+      });
     }
 
 
