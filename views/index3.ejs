@@ -199,15 +199,15 @@
 
       FB.api('/me', function(response) {
         var j = {'accessToken': aKey, 'fb_id': response.id}
-        console.log(aKey, response.id);
-        postTokenReq.open('post', './storeToken', true);
-        postTokenReq.setRequestHeader('Content-type', 'application/json');
-        postTokenReq.onreadystatechange = function() {
+        console.log(j);
+        //postTokenReq.open('post', './storeToken', true);
+        //postTokenReq.setRequestHeader('Content-type', 'application/json');
+        /*postTokenReq.onreadystatechange = function() {
            if (postTokenReq.readyState == XMLHttpRequest.DONE && postTokenReq.status == 200) {
             console.log('storToken onreadystatechange');
           }
-        }
-        postTokenReq.send(j);
+        }*/
+        //postTokenReq.send(j);
       });
     }
 
