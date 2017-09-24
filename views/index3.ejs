@@ -39,49 +39,28 @@
         </div>
       </div>
 
-      <div class="large-12 cell" id="gameArea">
-        <!-- This is where the templates defined below will be used -->
-        <div class="grix-x" style="height: 100vh; background-color:rgb(255,51,51)">
-          <div class="large-12 cell">
-            <div id="bodymovin"></div>
-              <div class="titleWrapper">
-                <div class="title" style="margin-bottom: 40px;">Raphael, Anubhav, Paul, and Corey present: Face Off</div>
-
-                <div class="buttons">
-                    <button id="btnCreateGame" class="btn left">CREATE</button>
-                    <button id="btnJoinGame" class="btn right">JOIN</button>
-                    <div style="clear:both"></div>
-                    <div id="fb-root"></div>
-                    <fb:login-button id="fb-btn" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></fb:login-button>
-                </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>
+      <div class="large-12 cell" id="gameArea"></div>
 
       <!-- Main Title Screen that appears when the page loads for the first time -->
       <script id="intro-screen-template" type="text/template">
+          <!-- This is where the templates defined below will be used -->
+          <div class="grix-x" style="height: 100vh; background-color:rgb(255,51,51)">
+            <div class="large-12 cell">
+              <div id="bodymovin"></div>
+                <div class="titleWrapper">
+                  <div class="title" style="margin-bottom: 40px;">Raphael, Anubhav, Paul, and Corey present: Face Off</div>
 
-          <div class="grix-x">
-          <div class="large-12 cell" style="height: 20vh; background-color:rgb(255, 51, 51)">
-            <div id="bodymovin"></div>
-          </div>
-        </div>
-        <div class="titleWrapper">
+                  <div class="buttons">
+                      <button id="btnCreateGame" class="btn left">CREATE</button>
+                      <button id="btnJoinGame" class="btn right">JOIN</button>
+                      <div style="clear:both"></div>
+                      <div id="fb-root"></div>
+                      <fb:login-button id="fb-btn" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></fb:login-button>
+                  </div>
 
-              <div class="title">Face-Off</div>
-
-              <div class="buttons">
-
-                  <button id="btnCreateGame" class="btn left">CREATE</button>
-                  <button id="btnJoinGame" class="btn right">JOIN</button>
-                  <div style="clear:both"></div>
               </div>
-
+            </div>
           </div>
-
       </script>
 
       <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
@@ -267,7 +246,7 @@
         statusChangeCallback(response);
       });
     }
-    
+
     var fb_logout = document.getElementById('logout-btn');
     fb_logout.addEventListener('click', function() {
       console.log('User is attempting to logout');
