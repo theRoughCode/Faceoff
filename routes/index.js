@@ -12,8 +12,7 @@ routes.get('/fb', function(req, res){
 	res.render('index');
 });
 
-routes.post('/azureblob', upload.single("testblob"),  function(req, res)
-{
+routes.post('/azureblob', upload.single("testblob"),  function(req, res) {
 	azure.sendBlob(req, res);
 });
 

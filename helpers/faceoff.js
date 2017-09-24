@@ -20,6 +20,7 @@ exports.initGame = function(sio, socket){
     gameSocket.on('hostCountdownFinished', hostStartGame);
     //gameSocket.on('hostNextRound', hostNextRound);
     gameSocket.on('addRoom', addRoom);
+    gameSocket.on('populateTable', populateTable);
 
     // Player Events
     gameSocket.on('playerJoinGame', playerJoinGame);
@@ -98,6 +99,18 @@ function hostNextRound(data) {
  */
 function addRoom(data) {
     database.addRoom(data.gameId, data.playerName, 0, data.sessionId);
+}
+
+/**
+ * Add new room to database
+ * @param data Sent from the client. Contains the room and host info
+ * { gameId : *, playerName : *, sessionId : * }
+ */
+function populateTable(gameId) {
+    database.getRanking(gameId, players => {
+      console.log(players);
+      io.sockets.in(gameId).emit('populateTable', players);
+    });
 }
 
 /* *****************************

@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <!-- Ensure that everything scales appropriately on a mobile device
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">-->
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="/socket.io/socket.io.js"></script>
     <title>FaceOff</title>
     <!-- Let's borrow a cool looking Font from Google -->
@@ -112,17 +111,11 @@
         <!-- This is the 'Host' screen. It displays the word for each player to match -->
         <script id="game-template" type="text/template">
           <div class="grid-x align-middle">
+            <div id="timer">5</div>
             <div class="medium-3 cell leaderboard" style="padding: 10px;">
               <h4 class="text-center">Leaderboard</h4>
               <table class="responsive text-center" style="width: 100%">
-                <tbody>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Name</th>
-                    <th>Score</th>
-                  </tr>
-                  <tr id="scoreTable">
-                  </tr>
+                <tbody id="scoreTable">
                 </tbody>
               </table>
             </div>
@@ -155,42 +148,4 @@
   <script src="../public/js/what-input.js"></script>
   <script src="../public/js/foundation.min.js"></script>
   <script src="../public/js/custom_faceoff.js"></script>
-  <script>
-  const users = [
-    {
-      name: 'Player 1',
-      score: 214,
-    },
-    {
-      name: 'Player 2',
-      score: 217,
-    },
-    {
-      name: 'Player 3',
-      score: 234,
-    },
-    {
-      name: 'Player 4',
-      score: 400,
-    }
-  ];
-
-  const scoreTable = document.querySelector('#scoreTable');
-  users.forEach((user, index) => {
-    var td1 = document.createElement('td');
-    td1.style["text-align"] = 'left';
-    td1.innerHTML = index + 1;
-    scoreTable.appendChild(td1);
-
-    var td2 = document.createElement('td');
-    td2.style["text-align"] = 'center';
-    td2.innerHTML = user.name;
-    scoreTable.appendChild(td2);
-
-    var td3 = document.createElement('td');
-    td3.style["text-align"] = 'right';
-    td3.innerHTML = user.score;
-    scoreTable.appendChild(td3);
-  });
-  </script>
 </html>
