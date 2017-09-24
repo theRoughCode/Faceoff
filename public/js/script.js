@@ -1,5 +1,17 @@
 const MAXPLAYERSPERROOM = 3;
 const THRESHOLD = 0.75;
+var intervalClearID; // bad but since setInterval what returns the ID, there's not much you can do
+
+
+function handleResult(score)
+{
+	console.log(score);
+	if (score > THRESHOLD)
+	{
+		console.log("You smiled!");
+		clearInterval(intervalClearID);
+	}
+}
 
 var Video = {
 	width : 320,    // We will scale the photo width to this
@@ -24,15 +36,15 @@ var Video = {
 		// Notify DOM when video actually begins playing
 		Video.video.addEventListener('canplay', function(ev) {
 		  if (!Video.streaming) {
-  			Video.height = Video.video.videoHeight / (Video.video.videoWidth/Video.width);
+			Video.height = Video.video.videoHeight / (Video.video.videoWidth/Video.width);
 
-  			Video.video.setAttribute('width', Video.width);
-  			Video.video.setAttribute('height', Video.height);
-  			Video.canvas.setAttribute('width', Video.width);
-  			Video.canvas.setAttribute('height', Video.height);
-  			Video.streaming = true;
+			Video.video.setAttribute('width', Video.width);
+			Video.video.setAttribute('height', Video.height);
+			Video.canvas.setAttribute('width', Video.width);
+			Video.canvas.setAttribute('height', Video.height);
+			Video.streaming = true;
 
-  			//setInterval(() => Video.processImage(), 200);
+			intervalClearID = setInterval(() => {Video.processImage()}, 1000);
 		  }
 		}, false);
 	},
@@ -45,36 +57,38 @@ var Video = {
 			Video.canvas.height = Video.height;
 			Video.ctx.drawImage(Video.video, 0, 0, Video.width, Video.height);
 
-			canvas.toBlob(function (blob) {
-				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?", true);
-				xhr.setRequestHeader("Content-Type","application/octet-stream");
-				xhr.setRequestHeader("Ocp-Apim-Subscription-Key","fbd1c861dad34cc6aa652e6fa30faa46");
-				xhr.send(blob);
-
-				xhr.onreadystatechange = function()
-				{
-					if (this.readyState == 4 && this.status == 200) {
-						// Typical action to be performed when the document is ready:
-						var res = JSON.parse(this.response);
-
-						if (res.length && res[0]["scores"])
-						{
-							console.log(res[0]["scores"]["happiness"]);
-						}
-						else
-						{
-							console.log(res);
-						}
-					}
-					else
-					{
-						console.log("XHR failed. See below.");
-						console.log(this);
-					}
-				};
+			return canvas.toBlob(blob =>
+			{
+				Video.sendFrame(blob);
 			});
 		}
+	},
+
+	sendFrame : function(blob)
+	{
+		var formData = new FormData();
+		formData.append("testblob", blob, "testblob");
+
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function()
+		{
+			if (this.readyState == 4)
+			{
+				if (this.status == 200)
+					handleResult(parseFloat(this.response));
+				else if (this.status == 418)
+				{
+					// No faces found
+				}
+				else
+				{
+					// error
+				}
+			}
+		};
+
+		xhr.open("POST", "/azureblob", true);
+		xhr.send(formData);
 	}
 };
 

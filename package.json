@@ -8,9 +8,12 @@
     "http": "node bin/server.js",
     "https": "node bin/server2.js"
   },
-  "author": "Anubhav Srivastava, Corey Hornbeck, Paul Delgad, Raphael Koh",
+  "author": "Anubhav Srivastava, Corey Hornbeck, Paul Delgado, Raphael Koh",
   "license": "ISC",
   "dependencies": {
+    "blob": "0.0.4",
+    "blob-util": "^1.3.0",
+    "body-parser": "^1.18.2",
     "compression": "^1.7.0",
     "dotenv": "^4.0.0",
     "ejs": "^2.5.7",
@@ -19,7 +22,8 @@
     "firebase": "^4.4.0",
     "morgan": "^1.8.2",
     "serve-favicon": "^2.4.4",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.3",
+    "xmlhttprequest": "^1.8.0"
   },
   "repository": {
     "type": "git",
