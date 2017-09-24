@@ -1,5 +1,30 @@
 const MAXPLAYERSPERROOM = 3;
 const THRESHOLD = 0.75;
+var intervalClearID; // bad but since setInterval what returns the ID, there's not much you can do
+
+
+function handleResult(score) {
+	console.log(score);
+	if (score > THRESHOLD) {
+		console.log("You smiled!");
+		App.smiled();
+	}
+}
+
+/**
+ * This function creates an <iframe> (and YouTube player)
+ *    after the API code downloads.
+ */
+function onYouTubeIframeAPIReady() {
+	console.log('url: ' + App.YT.url);
+	App.YT.player = new YT.Player('yt', {
+		videoId: App.YT.url,
+		events: {
+			'onReady': App.YT.onYtReady,
+			'onStateChange': App.YT.onYTStateChange
+		}
+	});
+}
 
 var Video = {
 	width : 320,    // We will scale the photo width to this
@@ -51,32 +76,28 @@ var Video = {
 				xhr.setRequestHeader("Content-Type","application/octet-stream");
 				xhr.setRequestHeader("Ocp-Apim-Subscription-Key","fbd1c861dad34cc6aa652e6fa30faa46");
 				xhr.send(blob);
-
-				xhr.onreadystatechange = function()
-				{
-					if (this.readyState == 4 && this.status == 200) {
-						// Typical action to be performed when the document is ready:
-						var res = JSON.parse(this.response);
-
-						if (res.length && res[0]["scores"])
-						{
-							console.log(res[0]["scores"]["happiness"]);
-						}
-						else
-						{
-							console.log(res);
-						}
-					}
-					else
-					{
-						console.log("XHR failed. See below.");
-						console.log(this);
-					}
-				};
-			});
+			}
 		}
 	}
-};
+
+	sendFrame : function(blob) {
+		var formData = new FormData();
+		formData.append("testblob", blob, "testblob");
+
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function(){
+			if (this.readyState == 4){
+				if (this.status == 200)
+					handleResult(parseFloat(this.response));
+				else if (this.status == 418) {
+					IO.error({ message: "Face not found!" });
+				}
+				else {
+					IO.error({ message: "Camera error!" });
+				}
+			}
+		};
+	}
 
 /**
 * All the code relevant to Socket.IO is collected in the IO namespace.
@@ -156,18 +177,11 @@ var IO = {
 		// Update the current round
 		App.currentRound = data.round;
 
-		// Load the video for the Host and Player
-		App.Player.loadVideo(data);
-	},
+		console.log("1");
 
-	/**
-	 * A player answered. If this is the host, check the answer.
-	 * @param data
-	 */
-	hostCheckAnswer : function(data) {
-		if(App.myRole === 'Host') {
-			App.Host.checkAnswer(data);
-		}
+		// Load the video for the Host and Player
+		//App.Player.loadVideo(data);
+		App.YT.loadYT(data.url);
 	},
 
 	/**
@@ -199,11 +213,6 @@ var App = {
      * This is used to differentiate between 'Host' and 'Player' browsers.
      */
     myRole: '',   // 'Player' or 'Host'
-
-    /**
-     * Contains references to player data
-     */
-    players : [],
 
     /**
      * The Socket.IO socket object identifier. This is unique for
@@ -267,6 +276,131 @@ var App = {
         App.gameArea.innerHTML = App.templateIntroScreen;
     },
 
+		/**
+     * Populates score table with users
+     */
+    populateTable: function(users) {
+			if (!users) return;
+
+			const scoreTable = document.querySelector('#scoreTable');
+			scoreTable.innerHTML = '<tr><th>Rank</th><th>Name</th><th>Score</th></tr>'
+			users.forEach((user, index) => {
+				var tr = document.createElement('tr');
+				var td1 = document.createElement('td');
+				td1.style["text-align"] = 'left';
+				td1.innerHTML = index + 1;
+				tr.appendChild(td1);
+
+				var td2 = document.createElement('td');
+				td2.style["text-align"] = 'center';
+				td2.innerHTML = user.name;
+				tr.appendChild(td2);
+
+				var td3 = document.createElement('td');
+				td3.style["text-align"] = 'right';
+				td3.innerHTML = user.score;
+				tr.appendChild(td3);
+
+				scoreTable.appendChild(tr);
+			});
+    },
+
+		/**
+     * Show the initial Anagrammatix Title Screen
+     * (with Start and Join buttons)
+     */
+    smiled: function() {
+			App.YT.stopVideo();
+    },
+
+		/* *******************************
+       *         YT CODE           *
+       ******************************* */
+
+		YT : {
+
+			/**
+	     * YouTube player reference
+	     */
+	    player: '',
+
+			/**
+	     * true if video is done playing
+	     */
+	    done: false,
+
+			/**
+	     * true if video has been playing
+	     */
+	    started: false,
+
+			/**
+	     * true if video has been playing
+	     */
+	    url: '',
+
+			/**
+	     * Load YouTube player
+	     */
+	    loadYT: function(url) {
+				var tag = document.createElement('script');
+
+	      tag.src = "https://www.youtube.com/iframe_api";
+	      var firstScriptTag = document.getElementsByTagName('script')[0];
+	      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+				App.YT.url = url;
+
+				console.log("2");
+	    },
+
+			/**
+	     * The API will call this function when the video player is ready.
+	     */
+	    onYTReady: function(event) {
+				const data = {
+					'roomId' : App.gameId,
+					'sessionId' : App.mySocketId
+				}
+				IO.socket.emit('ytReady', data);  // TODO: notify others that your video is ready
+				console.log("4");
+				event.target.playVideo();
+				App.YT.started = true;
+	    },
+
+			/**
+	     * The API calls this function when the player's state changes.
+			 *    The function indicates that when playing a video (state=1),
+			 *    the player should play for six seconds and then stop.
+	     */
+	    onYTStateChange: function(event) {
+				if (event.data == YT.PlayerState.PLAYING && !App.YT.done) {
+					App.YT.done = true;
+				}
+	    },
+
+			/**
+	     * Stop YouTube video
+	     */
+	    stopVideo: function() {
+				if (!App.YT.started) return;
+
+				// stop sending feed to azure
+				clearInterval(intervalClearID);
+				console.log("HIII");
+				console.log(App.YT.player);
+				App.YT.player.stopVideo();
+
+				const data = {
+					gameId : App.gameId,
+					playerName : App[App.myRole].myName,
+					sessionId : App.mySocketId,
+					elapsedTime : App.YT.player.getCurrentTime()
+				};
+
+				IO.socket.emit('playerSmiled', data);
+	    }
+		},
 
     /* *******************************
        *         HOST CODE           *
@@ -607,7 +741,7 @@ var App = {
          * @param data{{mySocketId: *, gameId: *, url: *}}
          */
         loadVideo : function(data) {
-            const PREFERENCES = '?modestbranding=1&autoplay=1&disablekb=1&showinfo=0&controls=0';
+            const PREFERENCES = '?modestbranding=1&disablekb=1&showinfo=0&controls=0';
             // Insert the video into the DOM
             document.querySelector('#video').setAttribute('src', data.url + PREFERENCES);
         },

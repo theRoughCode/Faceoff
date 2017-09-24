@@ -97,3 +97,7 @@ table.responsive {
     text-align: center;
     opacity: 1;
 }
+
+#bodymovin svg {
+	height: 40vh !important;
+}

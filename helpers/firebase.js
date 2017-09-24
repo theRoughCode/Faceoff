@@ -31,6 +31,11 @@ var db = admin.database();
   */
  var playersRef = db.ref('players');
 
+ /*
+  * [url]
+  */
+ var videosRef = db.ref('videos');
+
 /*
  * Set host by roomID
  * @param hostData {{ hostName: *, hostScore: *, sessionId: * }}
@@ -122,6 +127,13 @@ function addPlayer(sessionId, roomId) {
 }
 
 /*
+ * Eliminate player
+ */
+function eliminatePlayer(roomId, sessionId) {
+  return roomsRef.child(`${roomId}/players/${sessionId}/eliminated`).set(true);
+}
+
+/*
  * Retrieve players by roomID
  */
 function getPlayersList(roomId, callback) {
@@ -130,6 +142,21 @@ function getPlayersList(roomId, callback) {
 
 function removeRoom(roomID) {
   roomsRef.child(`${roomId}`).set(null);
+}
+
+/*
+ * Retrieve videos
+ */
+function getVideos() {
+  return videosRef.once('value');
+}
+
+/*
+ * Add video to list
+ */
+function addVideo(url) {
+  var key = videosRef.push().key;
+  videosRef.child(key).set(`https://www.youtube.com/embed/${url}`);
 }
 
 module.exports = {
@@ -142,5 +169,8 @@ module.exports = {
   addPlayer,
   getRanking,
   setRanking,
-  listenToRanking
+  listenToRanking,
+  eliminatePlayer,
+  getVideos,
+  addVideo
 }

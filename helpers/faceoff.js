@@ -24,6 +24,7 @@ exports.initGame = function(sio, socket){
 
     // Player Events
     gameSocket.on('playerJoinGame', playerJoinGame);
+    gameSocket.on('playerSmiled', playerSmiled);
     //gameSocket.on('playerAnswer', playerAnswer);
     //gameSocket.on('playerRestart', playerRestart);
 }
@@ -68,14 +69,15 @@ function hostPrepareGame(gameId) {
  * @param gameId The game ID / room ID
  */
 function hostStartGame(gameId) {
-    console.log('Game Started.');
-    var url = 'https://www.youtube.com/embed/brRmuRYkJ9c';
-    var data = {
-        mySocketId : this.id,
-        gameId : gameId,
-        url : url
-    };
-    io.sockets.in(data.gameId).emit('playVideo', data);
+    database.getVideos(videos => {
+      var rand = Math.random() * videos.length;
+      var data = {
+          mySocketId : this.id,
+          gameId : gameId,
+          url : videos[rand]
+      };
+      io.sockets.in(data.gameId).emit('playVideo', data);
+    });
 };
 
 /**
@@ -156,14 +158,10 @@ function playerJoinGame(data) {
 
 /**
  * A player has tapped a word in the word list.
- * @param data gameId
+ * @param data gameId, playerName, sessionId, elapsedTime (in seconds)
  */
-function playerAnswer(data) {
-    // console.log('Player ID: ' + data.playerId + ' answered a question with: ' + data.answer);
-
-    // The player's answer is attached to the data object.  \
-    // Emit an event with the answer so it can be checked by the 'Host'
-    io.sockets.in(data.gameId).emit('hostCheckAnswer', data);
+function playerSmiled(data) {
+    database.updateScore(data.gameId, data.playerName, data.elapsedTime / 10, data.sessionId);
 }
 
 /**
