@@ -76,9 +76,9 @@ var Video = {
 				xhr.setRequestHeader("Content-Type","application/octet-stream");
 				xhr.setRequestHeader("Ocp-Apim-Subscription-Key","fbd1c861dad34cc6aa652e6fa30faa46");
 				xhr.send(blob);
-			}
+			});
 		}
-	}
+	},
 
 	sendFrame : function(blob) {
 		var formData = new FormData();
@@ -98,6 +98,7 @@ var Video = {
 			}
 		};
 	}
+}
 
 /**
 * All the code relevant to Socket.IO is collected in the IO namespace.
@@ -167,6 +168,7 @@ var IO = {
 	 */
 	beginNewGame : function(data) {
 		App.Player.gameCountdown(data);
+		Video.startup();
 	},
 
 	/**
@@ -803,10 +805,5 @@ var App = {
     }
 };
 
-Video.startup();
 IO.init();
 App.init();
-
-
-
-
