@@ -488,11 +488,12 @@ var App = {
          * @param data{{ gameId: int, mySocketId: * }}
          */
         gameInit: function (data) {
+					console.log(data);
             App.gameId = data.gameId;
             App.mySocketId = data.mySocketId;
             App.myRole = 'Host';
             App.Host.numPlayersInRoom = 1;
-						App.numPlayers = parseInt(data.numPlayers);
+						App.numPlayers = data.numPlayers;
 
             // collect data to send to the server
             var data = {
