@@ -96,6 +96,14 @@ function setRanking(roomId, ranking) {
 }
 
 /*
+ * Listen to ranking by roomID
+ * @param roomId
+ */
+function listenToRanking(roomId) {
+  return roomsRef.on('child_changed');
+}
+
+/*
  * Add player and their room
  */
 function addPlayer(sessionId, roomId) {
@@ -122,5 +130,6 @@ module.exports = {
   getPlayersList,
   addPlayer,
   getRanking,
-  setRanking
+  setRanking,
+  listenToRanking
 }

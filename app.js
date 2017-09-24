@@ -28,11 +28,11 @@ app.use(express.static(path.join(__dirname, '/views')));
 app.set('view engine', 'ejs');
 
 // Redirect Function
-	function ensureSecure(req, res, next) {
-		if(req.secure) {
-			return next();
-		}
-		res.redirect('https://' + req.hostname + req.url);
-	}
+// function ensureSecure(req, res, next) {
+// 	if(req.secure) {
+// 		return next();
+// 	}
+// 	res.redirect('https://' + req.hostname + req.url);
+// }
 
 module.exports = app;

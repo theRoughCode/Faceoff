@@ -21,6 +21,8 @@ html, body {
    ****************************** */
 
 .btn {
+    border-radius: 20px;
+    border: 1px solid #8AD453;
     display: inline-block;
     height: 100%;
     width: 49%;
@@ -41,18 +43,19 @@ html, body {
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
+    transition: 0.2s;
 }
 
 .btn:focus {
-    outline: thin dotted #333;
-    outline: 5px auto -webkit-focus-ring-color;
-    outline-offset: -2px;
+    outline: none;
 }
 
 .btn:hover,
 .btn:focus {
-    color: #AE37B2;
+    background-color: #F2F2F2;
+    color: #FF8080;
     text-decoration: none;
+    border: 1px solid #8AD453;
 }
 
 .btn:active,
@@ -83,9 +86,7 @@ html, body {
 .titleWrapper {
     font-family: 'Quicksand', sans-serif;
     font-weight: 400;
-    position: absolute;
-    height: 50%;
-    width: 96%;
+    width: 50%;
     margin: auto;
     bottom: 0;
     left: 0;
@@ -135,6 +136,7 @@ html, body {
 }
 
 .info input {
+    margin: auto;
     text-align: center;
     padding: 10px;
     width: 200px;
@@ -142,7 +144,7 @@ html, body {
     font-family: 'Quicksand', sans-serif;
     color: #A22FB0;
     font-weight: 300;
-    font-size: 54px;
+    font-size: 32px;
     border: 1px dotted white;
     border-radius: 10px;
     background: transparent;

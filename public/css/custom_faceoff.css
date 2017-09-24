@@ -68,3 +68,22 @@ table.responsive {
 	height: 100px;
 	width: 100px;
 }
+
+.camera {
+	position: absolute;
+	right: 20px;
+	top: 100px;
+}
+
+.camera video {
+	width: 150px;
+	height: 150px;
+}
+
+.player-list {
+	display: inline;
+}
+
+.player-list li {
+	display: inline
+}

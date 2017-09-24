@@ -46,6 +46,15 @@ function getRanking(roomId, callback) {
     .catch(err => console.error(`Failed to get players.`));
 }
 
+function listenToRanking(roomId, callback) {
+  firebase.listenToRanking(roomId)
+    .then(snapshot => {
+      if (snapshot.val()) return callback(snapshot.val());
+      else return callback(null);
+    })
+    .catch(err => console.error(`Failed to get players.`));
+}
+
 function updateScore(roomId, playerName, playerScore, sessionId) {
   firebase.setPlayerScore(roomId, {
     "playerName": playerName,
@@ -58,5 +67,6 @@ module.exports = {
   addRoom,
   addPlayer,
   getRanking,
-  updateScore
+  updateScore,
+  listenToRanking
 }
