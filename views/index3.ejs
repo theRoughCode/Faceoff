@@ -32,7 +32,7 @@
                 <ul class="menu">
                   <li>
                     <div id="fb-root"></div>
-                    <fb:login-button id="fb-btn" class="fb-login-button" scope="public_profile" onlogin="checkLoginState();" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></fb:login-button>
+                    <fb:login-button id="fb-btn" class="fb-login-button" scope="public_profile, user_friends, email" onlogin="checkLoginState();" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></fb:login-button>
                   </li>
                 </ul>
               </div>
@@ -197,7 +197,7 @@
       if (response.status === 'connected') {
         var uid = response.authResponse.userID;
         var accessToken = response.authResponse.accessToken;
-        console.log(accessToken);
+        //console.log(accessToken);
         testAPI();
       } else if (response.status === 'not_authorized') {
         console.log('User has logged into FB but not authorized app');
@@ -251,11 +251,11 @@
       FB.login(function(response) {
         if (response.status === 'connected') {
           console.log(response.authResponse.accessToken);
-          var fbConnected = new XMLHttpRequest();
-          fbConnected.onload = reqListener;
-          fbConnected.onError = reqError;
-          fbConnected.open('get', './fbconnected', true);
-          fbConnected.send();
+          //var fbConnected = new XMLHttpRequest();
+          //fbConnected.onload = reqListener;
+          //fbConnected.onError = reqError;
+          //fbConnected.open('get', './fbconnected', true);
+          //fbConnected.send();
         } else {
           console.log('Not authenicated');
         }
@@ -264,6 +264,12 @@
 
     function testAPI() {
       console.log('testAPI');
+      FB.api('/me', function(response) {
+        console.log('Successful login for: ' + response.name);
+      });
+      FB.api('/me/permissions', function(response) {
+        console.log(response);
+      });
     }
 
 
