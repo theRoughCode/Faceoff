@@ -321,7 +321,7 @@ var App = {
 			// Set avatars
 			var list = document.querySelector('.player-list');
 			list.innerHTML = '<li><video id="webcam" style="width: 20%; height: ; border: 2px solid rgb(255, 51, 51)"></video></li>';
-			console.log(users);
+
 			users.forEach((user, index) => {
 				var tr = document.createElement('tr');
 				var td1 = document.createElement('td');
@@ -341,7 +341,7 @@ var App = {
 
 				scoreTable.appendChild(tr);
 
-				if (user.name !== App[App.myRole].name) {
+				if (user.sessionId !== App.mySocketId) {
 					var li = document.createElement('li');
 					var fig = document.createElement('figure');
 
@@ -372,7 +372,6 @@ var App = {
 		 * Show the "Game Over" screen.
 		 */
 		endGame : function(arr) {
-			console.log("END GAME");
 			App.gameArea.innerHTML = App.templateEndGame;
 
 			document.querySelector('#description2').innerHTML = `1st Place : ${arr[0].name} (${arr[0].score} pts)`;

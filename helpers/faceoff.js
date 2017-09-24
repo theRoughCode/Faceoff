@@ -110,34 +110,45 @@ function populateTable(gameId) {
         io.sockets.in(gameId).emit('populateTable', arr);
 
         isRoundOver(gameId, res => {
-          if (res.length <= 1) {
-            if (res.length) {
-              for (var i = 0; i < arr.length; i++) {
-                if (arr[i].name === res[0].name) {
-                  arr[i].score = arr[0].score + 10;
-                  var winner = arr.splice(i, 1);
-                  arr.unshift(winner);
-                  return io.sockets.in(gameId).emit('gameOver', arr);
-                }
+          if(!res.length) return io.sockets.in(gameId).emit('gameOver', arr);
+          else if (res.length === 1) {
+            var count = 0;
+            for (var i = 0; i < arr.length; i++) {
+              count++;
+              if (arr[i].sessionId === res[0].sessionId) {
+                arr[i].score = arr[0].score + 10;
+                var winner = arr.splice(i, 1);
+                arr.unshift(...winner);
+                return io.sockets.in(gameId).emit('gameOver', arr);
+              } else if (count >= arr.length - 1) {
+                io.sockets.in(gameId).emit('gameOver', arr);
               }
             }
-            io.sockets.in(gameId).emit('gameOver', arr);
           }
         });
       }));
 }
 
 function formatScores(players, callback) {
-  async.map(players, (data, callback) => {
-    callback(null, data);
-  }, (err, res) => {
-    if (err) return console.error('Failed to format scores');
-
-    res.sort((a, b) => {
-      return ((a.score < b.score) ? 1 :
-             (a.score > b.score) ? -1 : 0);
+  const res = [];
+  async.forEachOf(players, (value, key, callback1) => {
+    res.push({
+      'sessionId': key,
+      'name': value.name,
+      'score': value.score
     });
-    return callback(res);
+    callback1();
+  }, err => {
+    if (err) {
+      console.error('Failed to format scores');
+      return callback(null);
+    } else {
+      res.sort((a, b) => {
+        return ((a.score < b.score) ? 1 :
+               (a.score > b.score) ? -1 : 0);
+      });
+      return callback(res);
+    }
   });
 }
 
@@ -199,15 +210,24 @@ function playerSmiled(data) {
 
 
  function isRoundOver(roomId, callback) {
+   const res = [];
    database.getPlayersList(roomId)
      .then(snapshot => {
        if (!snapshot.val()) return false;
-       async.filter(snapshot.val(), (val, callback) => callback(null, !val.eliminated), (err, res) => {
+       async.forEachOf(snapshot.val(), (value, key, callback1) => {
+         if (!value.eliminated) {
+           res.push({
+             'sessionId': key,
+             'name': value.playerName,
+             'score': value.playerScore
+           });
+         }
+         callback1();
+       }, err => {
          if (err) {
-           console.error('Failed to filter players');
+           console.error('Failed to format scores');
            return callback(null);
          }
-
          return callback(res);
        });
      });
