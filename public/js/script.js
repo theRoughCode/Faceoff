@@ -92,8 +92,10 @@ var Video = {
 			Video.ctx.drawImage(Video.video, 0, 0, Video.width, Video.height);
 
 			// So that it works when you quit a game
-			if canvas
+			if (canvas)
+			{
 				canvas.toBlob(blob => Video.sendFrame(blob));
+			}
 		}
 	},
 
