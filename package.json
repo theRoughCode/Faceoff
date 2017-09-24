@@ -5,9 +5,11 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "http": "node bin/server.js",
+    "https": "node bin/server2.js"
   },
-  "author": "",
+  "author": "Anubhav Srivastava, Corey Hornbeck, Paul Delgad, Raphael Koh",
   "license": "ISC",
   "dependencies": {
     "compression": "^1.7.0",
