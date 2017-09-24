@@ -267,6 +267,29 @@ var App = {
         App.gameArea.innerHTML = App.templateIntroScreen;
     },
 
+		/**
+     * Populates score table with users
+     */
+    populateTable: function(users) {
+			const scoreTable = document.querySelector('#scoreTable');
+			users.forEach((user, index) => {
+				var td1 = document.createElement('td');
+				td1.style["text-align"] = 'left';
+				td1.innerHTML = index + 1;
+				scoreTable.appendChild(td1);
+
+				var td2 = document.createElement('td');
+				td2.style["text-align"] = 'center';
+				td2.innerHTML = user.name;
+				scoreTable.appendChild(td2);
+
+				var td3 = document.createElement('td');
+				td3.style["text-align"] = 'right';
+				td3.innerHTML = user.score;
+				scoreTable.appendChild(td3);
+			});
+    },
+
 
     /* *******************************
        *         HOST CODE           *
@@ -668,7 +691,5 @@ var App = {
 
     }
 };
-
-Video.startup();
 IO.init();
 App.init();
