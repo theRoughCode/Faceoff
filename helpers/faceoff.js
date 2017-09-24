@@ -108,6 +108,8 @@ function addRoom(data) {
  */
 function populateTable(gameId) {
     database.getRanking(gameId, players => io.sockets.in(gameId).emit('populateTable', players));
+
+    database.listenToRanking(gameId, players => io.sockets.in(gameId).emit('populateTable', players));
 }
 
 /* *****************************
