@@ -44,7 +44,23 @@
 
       <div class="large-12 cell" id="gameArea">
         <!-- This is where the templates defined below will be used -->
+<div class="createGameWrapper">
+              <div class="info animated fadeInUp" id="nameField">
+                  <label for="inputHostName">Your Name:</label>
+                  <input id="inputHostName" type="text" />
+                  <label for="inputHostName">How many players do you want in your lobby?</label>
+                   <select name="numPlayers" id="numPlayers">
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    <option value="4">Four</option>
+                    <option value="5">Five</option>
+                  </select> 
+              </div>
 
+              <div class="info buttons">
+                  <button id="btnHost" class="btn animated fadeInUp">Host Game</button>
+              </div>
+          </div>
       </div>
 
       <!-- Main Title Screen that appears when the page loads for the first time -->
@@ -72,6 +88,13 @@
               <div class="info animated fadeInUp" id="nameField">
                   <label for="inputHostName">Your Name:</label>
                   <input id="inputHostName" type="text" />
+                  <label for="inputHostName">How many players do you want in your lobby?</label>
+                   <select name="numPlayers" id="numPlayers">
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    <option value="4">Four</option>
+                    <option value="5">Five</option>
+                  </select> 
               </div>
 
               <div class="info buttons">

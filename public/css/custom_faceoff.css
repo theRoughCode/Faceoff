@@ -143,3 +143,12 @@ iframe {
 	border-radius: 20px;
 	margin-top: 15px;
 }
+
+#numPlayers {
+	margin: auto;
+	width: 20%;
+	text-align: center;
+	border-radius: 10px;
+	box-shadow: inset 0px 1px 6px rgba(20,20,20,0.6);
+	background-color: #f2f2f2;
+}
