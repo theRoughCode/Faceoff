@@ -110,7 +110,7 @@ var Video = {
 					console.log('Face not found!');
 				}
 				else {
-					IO.error({ message: "Camera error!" });
+					console.log('camera error');
 				}
 			}
 		};

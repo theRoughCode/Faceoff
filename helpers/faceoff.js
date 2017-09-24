@@ -45,7 +45,11 @@ function hostCreateNewGame(data) {
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
     console.log('hostCreateNewGame');
     console.log(data);
-    this.emit('newGameCreated', {gameId: thisGameId, mySocketId: this.id, numPlayers: data.numPlayers});
+    this.emit('newGameCreated', {
+      gameId: thisGameId,
+      mySocketId: this.id,
+      numPlayers: data.numPlayers
+    });
 
     // Join the Room and wait for the players
     this.join(thisGameId.toString());
