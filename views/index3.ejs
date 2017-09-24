@@ -196,6 +196,17 @@
     </script>
   </body>
   <script>
+    function statusChangeCallback(res) {
+      console.log(statusChangeCallback);
+      console.log(res);
+
+      if (res.status === 'connected') {
+        testAPI();
+      } else {
+        console.log('user needs to login');
+      }
+    }
+
     window.fbAsyncInit = function() {
       FB.init({
         appId      : '207752326429628',
