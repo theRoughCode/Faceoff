@@ -38,12 +38,12 @@ function addPlayer(roomId, playerName, playerScore, sessionId) {
 }
 
 function getRanking(roomId, callback) {
-  firebase.getRanking(roomId, promise => promise
+  firebase.getRanking(roomId)
     .then(snapshot => {
       if (snapshot.val()) return callback(snapshot.val());
       else return callback(null);
     })
-    .catch(err => console.error(`Failed to get players.`)))
+    .catch(err => console.error(`Failed to get players.`));
 }
 
 function updateScore(roomId, playerName, playerScore, sessionId) {

@@ -289,7 +289,6 @@ var App = {
      * Populates score table with users
      */
     populateTable: function(users) {
-			console.log(users);
 			if (!users) return;
 
 			const scoreTable = document.querySelector('#scoreTable');
@@ -618,7 +617,12 @@ var App = {
                 document.querySelector('#playerWaitingMessage')
                     .appendChild(p)
                     .innerHTML = 'Joined Game ' + data.gameId + '. Please wait for game to begin.';
-            }
+            } else {
+							var newP = document.createElement('P');
+	            document.querySelector('#playersWaiting')
+	                .appendChild(newP)
+	                .innerHTML = 'Player ' + data.playerName + ' joined the game.';
+						}
         },
 
         /**
@@ -642,8 +646,7 @@ var App = {
             //TODO
 
             // Set the Score section on screen to 0 for each player.
-						console.log(App.gameId);
-            IO.socket.emit('populateTable', App.gameId);
+            setTimeout(() => IO.socket.emit('populateTable', App.gameId), 500);
         },
 
         /**

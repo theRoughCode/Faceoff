@@ -1,5 +1,6 @@
 const routes = require('express').Router();
 const azure = require("../helpers/azure.js");
+const database = require("../helpers/database.js");
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const upload = multer();
@@ -14,6 +15,10 @@ routes.get('/fb', function(req, res){
 
 routes.post('/azureblob', upload.single("testblob"),  function(req, res) {
 	azure.sendBlob(req, res);
+});
+
+routes.get('/:roomid', function(req, res) {
+  database.getRanking(req.params.roomid, data => res.send(data));
 });
 
 module.exports = routes;
