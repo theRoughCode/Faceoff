@@ -391,8 +391,6 @@ var App = {
 
 				// stop sending feed to azure
 				clearInterval(intervalClearID);
-				console.log("HIII");
-				console.log(App.YT.player);
 				App.YT.player.stopVideo();
 
 				const data = {

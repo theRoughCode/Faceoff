@@ -171,6 +171,7 @@ function playerJoinGame(data) {
  * @param data gameId, playerName, sessionId, elapsedTime (in seconds)
  */
 function playerSmiled(data) {
+  console.log(data);
     database.updateScore(data.gameId, data.playerName, data.elapsedTime / 10, data.sessionId);
 }
 
