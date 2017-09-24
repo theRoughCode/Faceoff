@@ -218,6 +218,7 @@
       if (response.status === 'connected') {
         var uid = response.authResponse.userID;
         var accessToken = response.authResponse.accessToken;
+        console.log(accessToken);
         localStorage['accessToken'] = JSON.stringify(accessToken);
         storeToken();
       } else if (response.status === 'not_authorized') {
