@@ -26,11 +26,10 @@ function addPlayer(roomId, playerName, playerScore, sessionId) {
   .then(() => firebase.getRanking(roomId))
   .then(snapshot => {
     const ranking = snapshot.val();
-    ranking.push({
+    ranking[sessionId] = {
       "name": playerName,
-      "score": playerScore,
-      "sessionId": sessionId
-    });
+      "score": playerScore
+    };
     return firebase.setRanking(roomId, ranking);
   })
   .then(() => firebase.setPlayerRoom(roomId, sessionId))
@@ -40,6 +39,7 @@ function addPlayer(roomId, playerName, playerScore, sessionId) {
 function getRanking(roomId, callback) {
   firebase.getRanking(roomId)
     .then(snapshot => {
+      console.log(snapshot.val());
       if (snapshot.val()) return callback(snapshot.val());
       else return callback(null);
     })
@@ -47,14 +47,7 @@ function getRanking(roomId, callback) {
 }
 
 function listenToRanking(roomId, callback) {
-  firebase.listenToRanking(roomId, players => {
-    if(!players) return null;
-    players.sort((a, b) => {
-      return ((a.score < b.score) ? 1 :
-             (a.score > b.score) ? -1 : 0);
-    });
-    return callback(players);
-  });
+  firebase.listenToRanking(roomId, callback);
 }
 
 function updateScore(roomId, playerName, playerScore, sessionId) {

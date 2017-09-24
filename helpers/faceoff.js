@@ -119,9 +119,26 @@ function addRoom(data) {
  * { gameId : *, playerName : *, sessionId : * }
  */
 function populateTable(gameId) {
-    database.getRanking(gameId, players => io.sockets.in(gameId).emit('populateTable', players));
+    database.getRanking(gameId, players =>
+      formatScores(players, arr =>
+        io.sockets.in(gameId).emit('populateTable', arr)));
+    database.listenToRanking(gameId, players =>
+      formatScores(players, arr =>
+        io.sockets.in(gameId).emit('populateTable', arr)));
+}
 
-    database.listenToRanking(gameId, players => io.sockets.in(gameId).emit('populateTable', players));
+function formatScores(players, callback) {
+  async.map(players, (data, callback) => {
+    callback(null, data);
+  }, (err, res) => {
+    if (err) return console.error('Failed to format scores');
+
+    res.sort((a, b) => {
+      return ((a.score < b.score) ? 1 :
+             (a.score > b.score) ? -1 : 0);
+    });
+    return callback(res);
+  });
 }
 
 /* *****************************
@@ -171,8 +188,7 @@ function playerJoinGame(data) {
  * @param data gameId, playerName, sessionId, elapsedTime (in seconds)
  */
 function playerSmiled(data) {
-  console.log(data);
-    database.updateScore(data.gameId, data.playerName, data.elapsedTime / 10, data.sessionId);
+    database.updateScore(data.gameId, data.playerName, Math.round(data.elapsedTime), data.sessionId);
 }
 
 /**
