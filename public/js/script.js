@@ -108,7 +108,7 @@ var Video = {
 				if (this.status == 200)
 					handleResult(parseFloat(this.response));
 				else if (this.status == 418) {
-					IO.error({ message: "Face not found!" });
+					console.log('Face not found!');
 				}
 				else {
 					IO.error({ message: "Camera error!" });
@@ -190,7 +190,6 @@ var IO = {
 	 */
 	beginNewGame : function(data) {
 		App.Player.gameCountdown(data);
-		Video.startup();
 	},
 
 	/**		 	/**
@@ -199,6 +198,7 @@ var IO = {
 	 */
 	populateTable : function(players) {
 		App.populateTable(players);
+		Video.startup();
 	},
 
 	/**
@@ -320,7 +320,9 @@ var App = {
 			const scoreTable = document.querySelector('#scoreTable');
 			scoreTable.innerHTML = '<tr><th>Rank</th><th>Name</th><th>Score</th></tr>';
 			// Set avatars
-			var list = document.querySelector('player-list');
+			var list = document.querySelector('.player-list');
+			list.innerHTML = '<li><video id="webcam" style="width: 20%; height: ; border: 2px solid rgb(255, 51, 51)"></video></li>';
+			console.log(users);
 			users.forEach((user, index) => {
 				var tr = document.createElement('tr');
 				var td1 = document.createElement('td');
@@ -340,12 +342,14 @@ var App = {
 
 				scoreTable.appendChild(tr);
 
-				var li = document.createElement('li');
-				var img = document.createElement('img');
-				var imgNum = (index < 4) ? index : Math.round(Math.random() * 4);
-				img.src = `../../views/avatars/av${imgNum}.png`;
-				li.appendChild(img);
-				list.appendChild(li);
+				if (user.name !== App[App.myRole].name) {
+					var li = document.createElement('li');
+					var img = document.createElement('img');
+					var imgNum = (index < 4) ? index : Math.round(Math.random() * 4);
+					img.src = `../../views/avatars/av${imgNum + 1}.png`;
+					li.appendChild(img);
+					list.appendChild(li);
+				}
 			});
     },
 
