@@ -113,6 +113,9 @@ var Video = {
 				}
 			}
 		};
+
+		xhr.open("POST", "/azureblob", true);
+		xhr.send(formData);
 	}
 }
 
@@ -345,7 +348,7 @@ var App = {
        *         YT CODE           *
        ******************************* */
 
-		YT : {
+	YT : {
 
 			/**
 	     * YouTube player reference
@@ -401,7 +404,7 @@ var App = {
 
 				IO.socket.emit('playerSmiled', data);
 	    }
-		},
+	},
 
     /* *******************************
        *         HOST CODE           *
