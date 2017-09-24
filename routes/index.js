@@ -9,6 +9,14 @@ routes.get('/', function(req, res){
   res.render('index3');
 });
 
+routes.get('/index2', function(req, res){
+  res.render('index2');
+});
+
+routes.get('/fbconnected', function(req, res) {
+	res.render('index3');
+});
+
 routes.get('/fb', function(req, res){
 	res.render('index');
 });

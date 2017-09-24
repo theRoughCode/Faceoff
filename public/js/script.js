@@ -1,4 +1,4 @@
-const MAXPLAYERSPERROOM = 1;
+const MAXPLAYERSPERROOM = 3;
 const THRESHOLD = 0.75;
 var intervalClearID; // bad but since setInterval what returns the ID, there's not much you can do
 
@@ -49,15 +49,15 @@ var Video = {
 		// Notify DOM when video actually begins playing
 		Video.video.addEventListener('canplay', function(ev) {
 		  if (!Video.streaming) {
-				Video.height = Video.video.videoHeight / (Video.video.videoWidth/Video.width);
+  			Video.height = Video.video.videoHeight / (Video.video.videoWidth/Video.width);
 
-				Video.video.setAttribute('width', Video.width);
-				Video.video.setAttribute('height', Video.height);
-				Video.canvas.setAttribute('width', Video.width);
-				Video.canvas.setAttribute('height', Video.height);
-				Video.streaming = true;
+  			Video.video.setAttribute('width', Video.width);
+  			Video.video.setAttribute('height', Video.height);
+  			Video.canvas.setAttribute('width', Video.width);
+  			Video.canvas.setAttribute('height', Video.height);
+  			Video.streaming = true;
 
-				intervalClearID = setInterval(() => Video.processImage(), 1000);
+  			//setInterval(() => Video.processImage(), 200);
 		  }
 		}, false);
 	},
@@ -70,10 +70,14 @@ var Video = {
 			Video.canvas.height = Video.height;
 			Video.ctx.drawImage(Video.video, 0, 0, Video.width, Video.height);
 
-			return canvas.toBlob(blob => Video.sendFrame(blob));
-		}
-	},
+			canvas.toBlob(function (blob) {
+				var xhr = new XMLHttpRequest();
+				xhr.open("POST", "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?", true);
+				xhr.setRequestHeader("Content-Type","application/octet-stream");
+				xhr.setRequestHeader("Ocp-Apim-Subscription-Key","fbd1c861dad34cc6aa652e6fa30faa46");
+				xhr.send(blob);
 
+<<<<<<< HEAD
 	sendFrame : function(blob) {
 		var formData = new FormData();
 		formData.append("testblob", blob, "testblob");
@@ -91,9 +95,31 @@ var Video = {
 				}
 			}
 		};
+=======
+				xhr.onreadystatechange = function()
+				{
+					if (this.readyState == 4 && this.status == 200) {
+						// Typical action to be performed when the document is ready:
+						var res = JSON.parse(this.response);
+>>>>>>> dcd812ca62802c7184a07973e1555b77bd1b57db
 
-		xhr.open("POST", "/azureblob", true);
-		xhr.send(formData);
+						if (res.length && res[0]["scores"])
+						{
+							console.log(res[0]["scores"]["happiness"]);
+						}
+						else
+						{
+							console.log(res);
+						}
+					}
+					else
+					{
+						console.log("XHR failed. See below.");
+						console.log(this);
+					}
+				};
+			});
+		}
 	}
 };
 
@@ -124,7 +150,6 @@ var IO = {
 		IO.socket.on('newGameCreated', IO.onNewGameCreated);
 		IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
 		IO.socket.on('beginNewGame', IO.beginNewGame);
-		IO.socket.on('populateTable', IO.populateTable);
 		IO.socket.on('playVideo', IO.playVideo);
 		IO.socket.on('gameOver', IO.gameOver);
 	},
@@ -166,15 +191,6 @@ var IO = {
 	 */
 	beginNewGame : function(data) {
 		App.Player.gameCountdown(data);
-		Video.startup();
-	},
-
-	/**
-	 * Populate leaderboards
-	 * @param data
-	 */
-	populateTable : function(players) {
-		App.populateTable(players);
 	},
 
 	/**
@@ -294,6 +310,7 @@ var App = {
         App.gameArea.innerHTML = App.templateIntroScreen;
     },
 
+<<<<<<< HEAD
 		/**
      * Populates score table with users
      */
@@ -413,6 +430,8 @@ var App = {
 	    }
 		},
 
+=======
+>>>>>>> dcd812ca62802c7184a07973e1555b77bd1b57db
 
     /* *******************************
        *         HOST CODE           *
@@ -716,12 +735,7 @@ var App = {
                 document.querySelector('#playerWaitingMessage')
                     .appendChild(p)
                     .innerHTML = 'Joined Game ' + data.gameId + '. Please wait for game to begin.';
-            } else {
-							var newP = document.createElement('P');
-	            document.querySelector('#playersWaiting')
-	                .appendChild(newP)
-	                .innerHTML = 'Player ' + data.playerName + ' joined the game.';
-						}
+            }
         },
 
         /**
@@ -742,10 +756,15 @@ var App = {
             });
 
             // Display the players' names on screen
-            //TODO
+            var player1Score = document.querySelector('#player1Score');
+            var player2Score = document.querySelector('#player2Score');
+            player1Score.querySelector('.playerName').innerHTML = App.players[0].playerName;
+
+            player2Score.querySelector('.playerName').innerHTML = App.players[1].playerName;
 
             // Set the Score section on screen to 0 for each player.
-            setTimeout(() => IO.socket.emit('populateTable', App.gameId), 500);
+            player1Score.querySelector('.score').setAttribute('id',App.players[0].mySocketId);
+            player2Score.querySelector('.score').setAttribute('id',App.players[1].mySocketId);
         },
 
         /**
@@ -814,5 +833,81 @@ var App = {
 
     }
 };
+
+Video.startup();
 IO.init();
 App.init();
+
+
+
+
+/* FB log functions */
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '207752326429628',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.10'
+    });
+    FB.AppEvents.logPageView();
+
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        var uid = response.authResponse.userID;
+        var accessToken = response.authResponse.accessToken;
+      } else if (response.status === 'not_authorized') {
+        console.log('User has logged into FB but not authorized app');
+      } else {
+        console.log('Something is wrong; not authorized');
+      }
+    });
+
+    FB.logout(function(response) {
+
+    });
+
+    FB.Event.subscribe('auth.login', function(response) {
+      console.log(response);
+    });
+  };
+
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=207752326429628";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  function reqListener() {
+    var data = JSON.parse(this.responseText);
+    console.log(data);
+  }
+
+  function reqError(err) {
+    console.log('Fetch Error :-S', err);
+  }
+
+  function login() {
+    FB.login(function(response) {
+      if (response.status === 'connected') {
+        console.log(response.authResponse.accessToken);
+        var fbConnected = new XMLHttpRequest();
+        fbConnected.onload = reqListener;
+        fbConnected.onError = reqError;
+        fbConnected.open('get', './fbconnected', true);
+        fbConnected.send();
+      } else {
+        console.log('Not authenicated');
+      }
+    });
+  }
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+  var fb_logout = document.getElementById('logout-btn');
+  fb_logout.addEventListener('click', function() {
+    console.log('User is attempting to logout');
+  });
