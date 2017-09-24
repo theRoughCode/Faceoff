@@ -1,0 +1,70 @@
+html, body {
+	background-color: rgb(242, 242, 242);
+	overflow-y: hidden;
+}
+
+.top-bar, .menu {
+	background-color: rgb(255, 51, 51) !important;
+}
+
+ul {
+	margin:0;
+}
+
+ul li .button {
+	border-radius: 15px;
+	margin: 10px;
+}
+
+.player-list li img { 
+	margin: 10px;
+}
+
+.leaderboard tr{
+	background color: rgb(0,204,0);
+	border-radius: 5px;
+}
+
+.leaderboard tbody {
+	background-color: rgb(0,130,0);
+	border-radius: 20px;
+	padding: 15px;
+}
+
+.leaderboard ul li p {
+	display: inline;
+}
+
+.leaderboard h4 {
+	color: rgb(255, 51, 51);
+}
+
+table.responsive tr:nth-child(odd) {
+	background-color: rgb(255, 51, 51) !important;
+}
+
+table.responsive tr:nth-child(even) {
+	background-color: rgb(255, 128, 128) !important;
+}
+
+table.responsive {
+	font-family: 'Quicksand', 'sans-serif';
+}
+
+.button {
+	background-color: rgb(255, 128, 128);
+}
+
+.button:hover {
+	background-color: rgb(217, 217, 217);
+	color: rgb(255, 51, 51);
+}
+
+.vidstream {
+	position: absolute;
+	right: 20px;
+	top: 10vh;
+	border: 2px solid black;
+	height: 100px;
+	width: 100px;
+}

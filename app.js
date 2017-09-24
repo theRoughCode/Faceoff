@@ -12,7 +12,6 @@ var faceoff = require('./helpers/faceoff');
 
 // Enable hiding of sensitive information
 require('dotenv').config();
-const port = process.env.PORT || 8000;
 
 //  Connect all our routes to our application
 app.use(compression());
@@ -27,14 +26,5 @@ app.use(express.static(path.join(__dirname, '/views')));
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-// Turn on that server!
-const server = require('http').createServer(app).listen(port, () => console.log('Server started! At http://localhost:' + port));
 
-// Create a Socket.IO server and attach it to the http server
-var io = require('socket.io').listen(server);
-
-// Listen for Socket.IO Connections. Once connected, start the game logic.
-io.sockets.on('connection', function (socket) {
-    console.log('client connected');
-    faceoff.initGame(io, socket);
-});
+module.exports = app;

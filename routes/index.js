@@ -5,7 +5,7 @@ const multer = require('multer');
 const upload = multer();
 
 routes.get('/', function(req, res){
-	res.render('index1');
+  res.render('index3');
 });
 
 routes.get('/fb', function(req, res){
