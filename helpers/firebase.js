@@ -156,7 +156,7 @@ function getVideos() {
  */
 function addVideo(url) {
   var key = videosRef.push().key;
-  videosRef.child(key).set(`https://www.youtube.com/embed/${url}`);
+  videosRef.child(key).set(url);
 }
 
 module.exports = {

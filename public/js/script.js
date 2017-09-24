@@ -5,8 +5,32 @@ var intervalClearID; // bad but since setInterval what returns the ID, there's n
 function handleResult(score) {
 	console.log(score);
 	if (score > THRESHOLD) {
-		console.log("You smiled!");
 		App.smiled();
+	}
+}
+
+
+/**
+ * The API will call this function when the video player is ready.
+ */
+function onPlayerReady(event) {
+	const data = {
+		'roomId' : App.gameId,
+		'sessionId' : App.mySocketId
+	}
+	//IO.socket.emit('ytReady', data);  // TODO: notify others that your video is ready
+	event.target.playVideo();
+	App.YT.started = true;
+}
+
+/**
+ * The API calls this function when the player's state changes.
+ *    The function indicates that when playing a video (state=1),
+ *    the player should play for six seconds and then stop.
+ */
+function onPlayerStateChange(event) {
+	if (event.data == YT.PlayerState.PLAYING && !App.YT.done) {
+		App.YT.done = true;
 	}
 }
 
@@ -15,12 +39,13 @@ function handleResult(score) {
  *    after the API code downloads.
  */
 function onYouTubeIframeAPIReady() {
-	console.log('url: ' + App.YT.url);
 	App.YT.player = new YT.Player('yt', {
+    height: '390',
+    width: '640',
 		videoId: App.YT.url,
 		events: {
-			'onReady': App.YT.onYtReady,
-			'onStateChange': App.YT.onYTStateChange
+			'onReady': onPlayerReady,
+			'onStateChange': onPlayerStateChange
 		}
 	});
 }
@@ -55,7 +80,7 @@ var Video = {
   			Video.canvas.setAttribute('width', Video.width);
   			Video.canvas.setAttribute('height', Video.height);
   			Video.streaming = true;
-  			setInterval(() => Video.processImage(), 200);
+  			intervalClearID = setInterval(() => Video.processImage(), 200);
 		  }
 		}, false);
 	},
@@ -179,8 +204,6 @@ var IO = {
 		// Update the current round
 		App.currentRound = data.round;
 
-		console.log("1");
-
 		// Load the video for the Host and Player
 		//App.Player.loadVideo(data);
 		App.YT.loadYT(data.url);
@@ -279,8 +302,6 @@ var App = {
      */
     showInitScreen: function() {
         App.gameArea.innerHTML = App.templateIntroScreen;
-
-				document.querySelector('#bodymovin');
     },
 
 		/**
@@ -357,33 +378,6 @@ var App = {
 	      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 				App.YT.url = url;
-
-				console.log("2");
-	    },
-
-			/**
-	     * The API will call this function when the video player is ready.
-	     */
-	    onYTReady: function(event) {
-				const data = {
-					'roomId' : App.gameId,
-					'sessionId' : App.mySocketId
-				}
-				IO.socket.emit('ytReady', data);  // TODO: notify others that your video is ready
-				console.log("4");
-				event.target.playVideo();
-				App.YT.started = true;
-	    },
-
-			/**
-	     * The API calls this function when the player's state changes.
-			 *    The function indicates that when playing a video (state=1),
-			 *    the player should play for six seconds and then stop.
-	     */
-	    onYTStateChange: function(event) {
-				if (event.data == YT.PlayerState.PLAYING && !App.YT.done) {
-					App.YT.done = true;
-				}
 	    },
 
 			/**
@@ -728,7 +722,8 @@ var App = {
             // Begin the on-screen countdown timer
             var secondsLeft = document.querySelector('#timer');
             App.countDown(secondsLeft, COUNTDOWNTIME, function(){
-                IO.socket.emit('hostCountdownFinished', App.gameId);
+							if (App.myRole === 'Host')
+								IO.socket.emit('hostCountdownFinished', App.gameId);
             });
 
 						setTimeout(() => IO.socket.emit('populateTable', App.gameId), 500);
