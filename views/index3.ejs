@@ -198,7 +198,7 @@
       if (response.status === 'connected') {
         var uid = response.authResponse.userID;
         var accessToken = response.authResponse.accessToken;
-        //console.log(accessToken);
+        localStorage['accessToken'] = accessToken;
         testAPI();
       } else if (response.status === 'not_authorized') {
         console.log('User has logged into FB but not authorized app');
