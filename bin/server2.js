@@ -27,7 +27,7 @@ s2.on('error', onError);
 
 	ios.sockets.on('connection', function (socket) {
 		console.log('client connected');
-		faceoff.initGame(io, socket);
+		faceoff.initGame(ios, socket);
 	});
 
 function onError(err) {
