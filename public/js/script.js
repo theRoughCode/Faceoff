@@ -871,11 +871,13 @@ App.init();
       }
     });
   }
+
   function checkLoginState() {
     FB.getLoginStatus(function(response) {
       statusChangeCallback(response);
     });
   }
+  
   var fb_logout = document.getElementById('logout-btn');
   fb_logout.addEventListener('click', function() {
     console.log('User is attempting to logout');
