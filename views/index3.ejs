@@ -197,21 +197,29 @@
 
       var aKey = localStorage['accessToken'];
 
-      FB.api('/me/', function(response) {
-        postTokenReq.open('get', './api/some.json', true);
-        postTokenReq.send();
+      FB.api('/me', function(response) {
+        var j = {'accessToken': aKey, 'fb_id': response.id}
+        console.log(j);
+        //postTokenReq.open('post', './storeToken', true);
+        //postTokenReq.setRequestHeader('Content-type', 'application/json');
+        /*postTokenReq.onreadystatechange = function() {
+           if (postTokenReq.readyState == XMLHttpRequest.DONE && postTokenReq.status == 200) {
+            console.log('storToken onreadystatechange');
+          }
+        }*/
+        //postTokenReq.send(j);
       });
     }
 
     function statusChangeCallback(response) {
       console.log('statusChangeCallback');
-      console.log(response);
+      //console.log(response);
 
       if (response.status === 'connected') {
         var uid = response.authResponse.userID;
         var accessToken = response.authResponse.accessToken;
         localStorage['accessToken'] = JSON.stringify(accessToken);
-        testAPI();
+        storeToken();
       } else if (response.status === 'not_authorized') {
         console.log('User has logged into FB but not authorized app');
       } else {
