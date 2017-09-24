@@ -343,12 +343,19 @@ var App = {
 
 				if (user.name !== App[App.myRole].name) {
 					var li = document.createElement('li');
+					var fig = document.createElement('figure');
+
 					var img = document.createElement('img');
 					var imgNum = (index < 4) ? index : Math.round(Math.random() * 4);
 					img.src = `../../views/avatars/av${imgNum + 1}.png`;
-					li.appendChild(img);
+					fig.appendChild(img);
+
+					var figcap = document.createElement('figcaption');
+					figcap.append(user.name);
+					fig.appendChild(figcap);
+
+					li.appendChild(fig);
 					list.appendChild(li);
-					list.appendChild(user.name);
 				}
 			});
     },
