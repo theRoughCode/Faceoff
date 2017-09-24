@@ -317,7 +317,9 @@ var App = {
 			if (!users) return;
 
 			const scoreTable = document.querySelector('#scoreTable');
-			scoreTable.innerHTML = '<tr><th>Rank</th><th>Name</th><th>Score</th></tr>'
+			scoreTable.innerHTML = '<tr><th>Rank</th><th>Name</th><th>Score</th></tr>';
+			// Set avatars
+			var list = document.querySelector('player-list');
 			users.forEach((user, index) => {
 				var tr = document.createElement('tr');
 				var td1 = document.createElement('td');
@@ -336,6 +338,13 @@ var App = {
 				tr.appendChild(td3);
 
 				scoreTable.appendChild(tr);
+
+				var li = document.createElement('li');
+				var img = document.createElement('img');
+				var imgNum = (index < 4) ? index : Math.round(Math.random() * 4);
+				img.src = `../../views/avatars/av${imgNum}.png`;
+				li.appendChild(img);
+				list.appendChild(li);
 			});
     },
 
