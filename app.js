@@ -14,7 +14,7 @@ var faceoff = require('./helpers/faceoff');
 require('dotenv').config();
 
 //  Connect all our routes to our application
-// app.all('*', ensureSecure);
+//app.all('*', ensureSecure);
 app.use(compression());
 app.use(favicon(__dirname + '/resources/logo.ico'));
 app.use(logger('dev'));
