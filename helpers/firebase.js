@@ -122,6 +122,13 @@ function addPlayer(sessionId, roomId) {
 }
 
 /*
+ * Eliminate player
+ */
+function eliminatePlayer(roomId, sessionId) {
+  return roomsRef.child(`${roomId}/players/${sessionId}/eliminated`).set(true);
+}
+
+/*
  * Retrieve players by roomID
  */
 function getPlayersList(roomId, callback) {
@@ -142,5 +149,6 @@ module.exports = {
   addPlayer,
   getRanking,
   setRanking,
-  listenToRanking
+  listenToRanking,
+  eliminatePlayer
 }

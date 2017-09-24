@@ -58,11 +58,15 @@ function listenToRanking(roomId, callback) {
 }
 
 function updateScore(roomId, playerName, playerScore, sessionId) {
-  firebase.setPlayerScore(roomId, {
-    "playerName": playerName,
-    "playerScore": playerScore,
-    "sessionId": sessionId
-  }).catch(err => console.error(`Failed to update score for ${playerName}.`))
+  firebase.eliminatePlayer(roomId, sessionId)
+  .then(() => {
+    const data = {
+      "playerName": playerName,
+      "playerScore": playerScore,
+      "sessionId": sessionId
+    };
+    return firebase.setPlayerScore(roomId, data);
+  }).catch(err => console.error(`Failed to eliminate ${playerName}.`));
 }
 
 module.exports = {
@@ -70,5 +74,6 @@ module.exports = {
   addPlayer,
   getRanking,
   updateScore,
-  listenToRanking
+  listenToRanking,
+  updateScore
 }
