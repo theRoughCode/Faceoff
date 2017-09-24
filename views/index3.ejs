@@ -176,10 +176,14 @@
     </div>
 
     </div>
-
-    <!-- Bodymovin script -->
-    <script>
-
+  </body>
+  <!-- script.js is where all the client-side game logic -->
+  <script src="../public/js/script.js"></script>
+  <script src="../public/js/what-input.js"></script>
+  <script src="../public/js/foundation.min.js"></script>
+  <script src="../public/js/custom_faceoff.js"></script>
+  <!-- Bodymovin script -->
+  <script>
     var anim;
     var elem = document.getElementById('bodymovin')
     var animData = {
@@ -193,51 +197,5 @@
         path: 'json/data.json'
     };
     anim = bodymovin.loadAnimation(animData);
-
-    </script>
-  </body>
-  <!-- script.js is where all the client-side game logic -->
-  <script src="../public/js/script.js"></script>
-
-  <script src="../public/js/what-input.js"></script>
-  <script src="../public/js/foundation.min.js"></script>
-  <script src="../public/js/custom_faceoff.js"></script>
-  <script>
-  const users = [
-    {
-      name: 'Player 1',
-      score: 214,
-    },
-    {
-      name: 'Player 2',
-      score: 217,
-    },
-    {
-      name: 'Player 3',
-      score: 234,
-    },
-    {
-      name: 'Player 4',
-      score: 400,
-    }
-  ];
-
-  const scoreTable = document.querySelector('#scoreTable');
-  users.forEach((user, index) => {
-    var td1 = document.createElement('td');
-    td1.style["text-align"] = 'left';
-    td1.innerHTML = index + 1;
-    scoreTable.appendChild(td1);
-
-    var td2 = document.createElement('td');
-    td2.style["text-align"] = 'center';
-    td2.innerHTML = user.name;
-    scoreTable.appendChild(td2);
-
-    var td3 = document.createElement('td');
-    td3.style["text-align"] = 'right';
-    td3.innerHTML = user.score;
-    scoreTable.appendChild(td3);
-  });
   </script>
 </html>
