@@ -531,7 +531,8 @@ var App = {
                hostName : document.querySelector('#inputHostName').value || 'anon',
 							 numPlayers : App.numPlayers
            };
-
+					 console.log("hi");
+					 console.log(App.numPlayers);
            // Send the gameId and playerName to the server
            IO.socket.emit('hostCreateNewGame', data);
 
