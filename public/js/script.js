@@ -92,7 +92,9 @@ var Video = {
 			Video.canvas.height = Video.height;
 			Video.ctx.drawImage(Video.video, 0, 0, Video.width, Video.height);
 
-			canvas.toBlob(blob => Video.sendFrame(blob));
+			// So that it works when you quit a game
+			if canvas
+				canvas.toBlob(blob => Video.sendFrame(blob));
 		}
 	},
 
