@@ -573,6 +573,8 @@ var App = {
             // Increment the number of players in the room
             App.Host.numPlayersInRoom += 1;
 
+						console.log(App.Host.numPlayersInRoom);
+						console.log(App.numPlayers);
 						console.log(parseInt(App.Host.numPlayersInRoom) === parseInt(App.numPlayers));
             // If two players have joined, start the game!
             if (parseInt(App.Host.numPlayersInRoom) === parseInt(App.numPlayers)) {
