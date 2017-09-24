@@ -36,6 +36,10 @@ function addPlayer(roomId, playerName, playerScore, sessionId) {
   .catch(err => console.error(`Failed to add player: ${playerName}`));
 }
 
+function getPlayersList(roomId) {
+  return firebase.getPlayersList(roomId);
+}
+
 function getRanking(roomId, callback) {
   firebase.getRanking(roomId)
     .then(snapshot => {
@@ -75,6 +79,7 @@ function addVideo(url) {
 module.exports = {
   addRoom,
   addPlayer,
+  getPlayersList,
   getRanking,
   updateScore,
   listenToRanking,

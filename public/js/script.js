@@ -3,7 +3,6 @@ const THRESHOLD = 0.75;
 var intervalClearID; // bad but since setInterval what returns the ID, there's not much you can do
 
 function handleResult(score) {
-	console.log(score);
 	if (score > THRESHOLD) {
 		App.smiled();
 	}
@@ -221,7 +220,8 @@ var IO = {
 	 * @param data
 	 */
 	gameOver : function(data) {
-		App[App.myRole].endGame(data);
+		console.log("asdassadasdasdasd");
+		App.endGame(data);
 	},
 
 	/**
@@ -282,6 +282,7 @@ var App = {
         App.templateNewGame = document.querySelector('#create-game-template-1').innerHTML;
         App.templateHostGame = document.querySelector('#create-game-template-2').innerHTML;
         App.templateJoinGame = document.querySelector('#join-game-template').innerHTML;
+        App.templateEndGame = document.querySelector('#end-game-template').innerHTML;
         App.gameDisplay = document.querySelector('#game-template').innerHTML;
     },
 
@@ -308,7 +309,7 @@ var App = {
      * (with Start and Join buttons)
      */
     showInitScreen: function() {
-        App.gameArea.innerHTML = App.templateIntroScreen;
+      App.gameArea.innerHTML = App.templateIntroScreen;
     },
 
 		/**
@@ -318,7 +319,9 @@ var App = {
 			if (!users) return;
 
 			const scoreTable = document.querySelector('#scoreTable');
-			scoreTable.innerHTML = '<tr><th>Rank</th><th>Name</th><th>Score</th></tr>'
+			scoreTable.innerHTML = '<tr><th>Rank</th><th>Name</th><th>Score</th></tr>';
+			// Set avatars
+			var list = document.querySelector('player-list');
 			users.forEach((user, index) => {
 				var tr = document.createElement('tr');
 				var td1 = document.createElement('td');
@@ -337,6 +340,13 @@ var App = {
 				tr.appendChild(td3);
 
 				scoreTable.appendChild(tr);
+
+				var li = document.createElement('li');
+				var img = document.createElement('img');
+				var imgNum = (index < 4) ? index : Math.round(Math.random() * 4);
+				img.src = `../../views/avatars/av${imgNum}.png`;
+				li.appendChild(img);
+				list.appendChild(li);
 			});
     },
 
@@ -347,6 +357,23 @@ var App = {
     smiled: function() {
 			App.YT.stopVideo();
     },
+
+		/**
+		 * Show the "Game Over" screen.
+		 */
+		endGame : function(arr) {
+			console.log("END GAME");
+			App.gameArea.innerHTML = App.templateEndGame;
+
+			document.querySelector('#description2').innerHTML = `1st Place : ${arr[0].name} (${arr[0].score} pts)`;
+			document.querySelector('#description1').innerHTML = `2nd Place : ${arr[1].name} (${arr[1].score} pts)`;
+			if (arr.length > 2) document.querySelector('#description3').innerHTML = `3rd Place : ${arr[2].name} (${arr[2].score} pts)`;
+
+			var mainMenuBtn = document.querySelector('#btnMainMenu');
+			var newLobbyBtn = document.querySelector('#btnNewLobby');
+			mainMenuBtn.addEventListener('click', App.init);
+			newLobbyBtn.addEventListener('click', App.Host.onCreateClick);
+		},
 
 		/* *******************************
        *         YT CODE           *
@@ -405,8 +432,6 @@ var App = {
 					sessionId : App.mySocketId,
 					elapsedTime : elapsedTime
 				};
-
-				console.log(elapsedTime);
 
 				IO.socket.emit('playerSmiled', data);
 	    }
@@ -538,75 +563,6 @@ var App = {
                 // Let the server know that two players are present.
                 IO.socket.emit('hostRoomFull', App.gameId);
             }
-        },
-
-        /**
-         * Check the answer clicked by a player.
-         * @param data{{round: *, playerId: *, answer: *, gameId: *}}
-         */
-        checkAnswer : function(data) {
-            // Verify that the answer clicked is from the current round.
-            // This prevents a 'late entry' from a player whos screen has not
-            // yet updated to the current round.
-            if (data.round === App.currentRound){
-
-                // Get the player's score
-                var pScore = document.querySelector('#' + data.playerId);
-
-                // Advance player's score if it is correct
-                if( App.Host.currentCorrectAnswer === data.answer ) {
-                    // Add 5 to the player's score
-                    pScore.innerHTML = pScore.innerHTML + 5;
-
-                    // Advance the round
-                    App.currentRound += 1;
-
-                    // Prepare data to send to the server
-                    var data = {
-                        gameId : App.gameId,
-                        round : App.currentRound
-                    }
-
-                    // Notify the server to start the next round.
-                    IO.socket.emit('hostNextRound',data);
-
-                } else {
-                    // A wrong answer was submitted, so decrement the player's score.
-                    pScore.innerHTML = pScore.innerHTML - 3 ;
-                }
-            }
-        },
-
-
-        /**
-         * All 10 rounds have played out. End the game.
-         * @param data
-         */
-        endGame : function(data) {
-            // Get the data for player 1 from the host screen
-            var p1 = document.querySelector('#player1Score');
-            var p1Score = p1.querySelector('.score').innerHTML;
-            var p1Name = p1.querySelector('.playerName').innerHTML;
-
-            // Get the data for player 2 from the host screen
-            var p2 = document.querySelector('#player2Score');
-            var p2Score = p2.querySelector('.score').innerHTML;
-            var p2Name = p2.querySelector('.playerName').innerHTML;
-
-            // Find the winner based on the scores
-            var winner = (p1Score < p2Score) ? p2Name : p1Name;
-            var tie = (p1Score === p2Score);
-
-            // Display the winner (or tie game message)
-            if(tie){
-                document.querySelector('#hostWord').innerHTML = "It's a Tie!";
-            } else {
-                document.querySelector('#hostWord').innerHTML =  winner + ' Wins!!';
-            }
-
-            // Reset game data
-            App.Host.numPlayersInRoom = 0;
-            App.Host.isNewGame = true;
         },
 
         /**
@@ -746,22 +702,6 @@ var App = {
             const PREFERENCES = '?modestbranding=1&disablekb=1&showinfo=0&controls=0';
             // Insert the video into the DOM
             document.querySelector('#video').setAttribute('src', data.url + PREFERENCES);
-        },
-
-        /**
-         * Show the "Game Over" screen.
-         */
-        endGame : function() {
-          var gameArea = document.querySelector('#gameArea');
-          gameArea.innerHTML = ('<div class="gameOver">Game Over!</div>');
-
-          var btn = document.createElement("BUTTON");
-          btn.appendChild(document.createTextNode("Start Again"));
-          btn.setAttribute('id','btnPlayerRestart');
-          btn.className += 'btn';
-          btn.className += 'btnGameOver';
-          btn.addEventListener('click', App.Player.onPlayerRestart);
-          gameArea.appendChild(btn);
         }
     },
 
