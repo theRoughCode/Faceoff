@@ -219,7 +219,6 @@ var IO = {
 	 * @param data
 	 */
 	gameOver : function(data) {
-		console.log("asdassadasdasdasd");
 		App.endGame(data);
 	},
 

@@ -16,7 +16,7 @@ ul li .button {
 	margin: 10px;
 }
 
-.player-list li img { 
+.player-list li img {
 	padding: 10px;
 	width: 20%;
 }
@@ -72,6 +72,7 @@ table.responsive {
 
 .camera video {
 	width: 20%;
+	height: auto;
 }
 
 .player-list {
@@ -127,4 +128,3 @@ table.responsive {
 	-moz-animation-delay: 5s;
 	-o-animation-delay: 5s;
 }
-

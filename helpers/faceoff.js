@@ -110,7 +110,19 @@ function populateTable(gameId) {
         io.sockets.in(gameId).emit('populateTable', arr);
 
         isRoundOver(gameId, res => {
-          if (res) io.sockets.in(gameId).emit('gameOver', arr);
+          if (res.length <= 1) {
+            if (res.length) {
+              for (var i = 0; i < arr.length; i++) {
+                if (arr[i].name === res[0].name) {
+                  arr[i].score = arr[0].score + 10;
+                  var winner = arr.splice(i, 1);
+                  arr.unshift(winner);
+                  return io.sockets.in(gameId).emit('gameOver', arr);
+                }
+              }
+            }
+            io.sockets.in(gameId).emit('gameOver', arr);
+          }
         });
       }));
 }
@@ -191,9 +203,12 @@ function playerSmiled(data) {
      .then(snapshot => {
        if (!snapshot.val()) return false;
        async.filter(snapshot.val(), (val, callback) => callback(null, !val.eliminated), (err, res) => {
-         if (err) return console.error('Failed to filter players');
+         if (err) {
+           console.error('Failed to filter players');
+           return callback(null);
+         }
 
-         return callback(!res.length);
+         return callback(res);
        });
      });
  }
