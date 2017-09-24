@@ -219,7 +219,8 @@
         var uid = response.authResponse.userID;
         var accessToken = response.authResponse.accessToken;
         console.log(accessToken);
-        localStorage['accessToken'] = JSON.stringify(accessToken);
+        //localStorage['accessToken'] = JSON.stringify(accessToken);
+        localStorage['accessToken'] = accessToken;
         storeToken();
       } else if (response.status === 'not_authorized') {
         console.log('User has logged into FB but not authorized app');
