@@ -197,9 +197,10 @@
 
       var aKey = localStorage['accessToken'];
 
-      FB.api('/me/', function(response) {
-        postTokenReq.open('get', './api/some.json', true);
-        postTokenReq.send();
+      FB.api('/me', function(response) {
+        console.log(aKey, response.id);
+        //postTokenReq.open('get', './api/some.json', true);
+        //postTokenReq.send();
       });
     }
 
