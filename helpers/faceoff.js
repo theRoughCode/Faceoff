@@ -19,15 +19,12 @@ exports.initGame = function(sio, socket){
     gameSocket.on('hostCreateNewGame', hostCreateNewGame);
     gameSocket.on('hostRoomFull', hostPrepareGame);
     gameSocket.on('hostCountdownFinished', hostStartGame);
-    //gameSocket.on('hostNextRound', hostNextRound);
     gameSocket.on('addRoom', addRoom);
     gameSocket.on('populateTable', populateTable);
 
     // Player Events
     gameSocket.on('playerJoinGame', playerJoinGame);
     gameSocket.on('playerSmiled', playerSmiled);
-    //gameSocket.on('playerAnswer', playerAnswer);
-    //gameSocket.on('playerRestart', playerRestart);
 }
 
 
@@ -91,20 +88,6 @@ function hostStartGame(gameId) {
 };
 
 /**
- * A player answered correctly. Time for the next word.
- * @param data Sent from the client. Contains the current round and gameId (room)
- */
-function hostNextRound(data) {
-    if(data.round < wordPool.length ){
-        // Send a new set of words back to the host and players.
-        //sendWord(data.round, data.gameId);
-    } else {
-        // If the current round exceeds the number of words, send the 'gameOver' event.
-        io.sockets.in(data.gameId).emit('gameOver',data);
-    }
-}
-
-/**
  * Add new room to database
  * @param data Sent from the client. Contains the room and host info
  * { gameId : *, playerName : *, sessionId : * }
@@ -123,8 +106,13 @@ function populateTable(gameId) {
       formatScores(players, arr =>
         io.sockets.in(gameId).emit('populateTable', arr)));
     database.listenToRanking(gameId, players =>
-      formatScores(players, arr =>
-        io.sockets.in(gameId).emit('populateTable', arr)));
+      formatScores(players, arr => {
+        io.sockets.in(gameId).emit('populateTable', arr);
+
+        isRoundOver(gameId, res => {
+          if (res) io.sockets.in(gameId).emit('gameOver', arr);
+        });
+      }));
 }
 
 function formatScores(players, callback) {
@@ -191,20 +179,21 @@ function playerSmiled(data) {
     database.updateScore(data.gameId, data.playerName, Math.round(data.elapsedTime), data.sessionId);
 }
 
-/**
- * The game is over, and a player has clicked a button to restart the game.
- * @param data
- */
-function playerRestart(data) {
-    // console.log('Player: ' + data.playerName + ' ready for new game.');
-
-    // Emit the player's data back to the clients in the game room.
-    data.playerId = this.id;
-    io.sockets.in(data.gameId).emit('playerJoinedRoom',data);
-}
-
 /* *************************
    *                       *
    *      GAME LOGIC       *
    *                       *
    ************************* */
+
+
+ function isRoundOver(roomId, callback) {
+   database.getPlayersList(roomId)
+     .then(snapshot => {
+       if (!snapshot.val()) return false;
+       async.filter(snapshot.val(), (val, callback) => callback(null, !val.eliminated), (err, res) => {
+         if (err) return console.error('Failed to filter players');
+
+         return callback(!res.length);
+       });
+     });
+ }
