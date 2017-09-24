@@ -2,7 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <!-- Don't think we're using this (Anubhav, 8:27) -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
     <script src="/socket.io/socket.io.js"></script>
     <title>FaceOff</title>
     <!-- Let's borrow a cool looking Font from Google -->
@@ -120,6 +121,7 @@
               </tbody>
             </table>
           </div>
+
           <div class="medium-9 cell text-center animated fadeInRight" style="border-radius: 20px; height: 60vh;">
             <div id="timer">5</div>
             <div class="camera">
@@ -127,19 +129,19 @@
             </div>
             <canvas id="canvas" style="display: none;">
             </canvas>
-            <div id="yt">
+            <div id="yt" style="pointer-events: none;">
               <iframe id="video" src="https://www.youtube.com/embed/5sqPu-x-_tw" frameborder="0"></iframe>
             </div>
 
             <div class="flex-child-auto align-stretch" style="">
-            <div class="grid-x">
-              <div class="small-12 cell text-middle" style="">
-                <ul class="player-list" style="list-style-type: none; display: inline;">
-                  <li><img src="http://via.placeholder.com/150x150" ></li>
-                </ul>
+              <div class="grid-x">
+                <div class="small-12 cell text-middle" style="">
+                  <ul class="player-list" style="list-style-type: none; display: inline;">
+                    <li><img src="avatars/av1.png"></li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
       </script>
@@ -165,8 +167,6 @@
           </div>
         </div>
       </script>
-
-    </div>
 
     </div>
   </body>
