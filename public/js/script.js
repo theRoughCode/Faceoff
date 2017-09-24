@@ -389,16 +389,20 @@ var App = {
 	    stopVideo: function() {
 				if (!App.YT.started) return;
 
+				var elapsedTime = App.YT.player.getCurrentTime();
+
 				// stop sending feed to azure
 				clearInterval(intervalClearID);
-				App.YT.player.stopVideo();
+				App.YT.player.pauseVideo();
 
 				const data = {
 					gameId : App.gameId,
 					playerName : App[App.myRole].myName,
 					sessionId : App.mySocketId,
-					elapsedTime : App.YT.player.getCurrentTime()
+					elapsedTime : elapsedTime
 				};
+
+				console.log(elapsedTime);
 
 				IO.socket.emit('playerSmiled', data);
 	    }

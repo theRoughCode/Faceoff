@@ -38,17 +38,17 @@ var db = admin.database();
 
 /*
  * Set host by roomID
- * @param hostData {{ hostName: *, hostScore: *, sessionId: * }}
+ * @param hostData {sessionId : { hostName: *, hostScore: * }}
  */
 function setHost(roomId, hostData, callback) {
   const data = {
     "hostName": hostData.hostName,
     "players": {},
-    "ranking": [{
-      "name": hostData.hostName,
-      "score": hostData.hostScore,
-      "sessionId": hostData.sessionId
-    }]
+    "ranking": {}
+  };
+  data.ranking[hostData.sessionId] = {
+    "name": hostData.hostName,
+    "score": hostData.hostScore
   };
   data.players[hostData.sessionId] = {
     "playerName": hostData.hostName,
@@ -91,7 +91,13 @@ function setPlayerRoom(roomId, sessionId) {
  * @param playerData {{ playerName: *, playerScore: *, sessionId: * }}
  */
 function setPlayerScore(roomId, playerData) {
-  return roomsRef.child(`${roomId}/players/${playerData.sessionId}/playerScore`).set(playerData.playerScore);
+  roomsRef.child(`${roomId}/players/${playerData.sessionId}/playerScore`)
+    .set(playerData.playerScore)
+    .then(() => roomsRef.child(`${roomId}/ranking/${playerData.sessionId}`)
+        .set({
+          "name": playerData.playerName,
+          "score": playerData.playerScore
+        }));
 }
 
 /*
