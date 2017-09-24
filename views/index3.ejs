@@ -31,7 +31,7 @@
                 <ul class="menu">
                   <li>
                     <div id="fb-root"></div>
-                    <fb:login-button id="fb-btn" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></fb:login-button>
+                    <fb:login-button id="fb-btn" class="fb-login-button" scope="public_profile, user_friends, email" onlogin="checkLoginState();" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></fb:login-button>
                   </li>
                 </ul>
               </div>
@@ -46,7 +46,7 @@
           <div class="large-12 cell">
             <div id="bodymovin"></div>
               <div class="titleWrapper">
-                <div class="title" style="margin-bottom: 40px;">Raphael, Anubhav, Paul, and Corey present: Face Off</div>
+                <div class="title" style="margin-bottom: 40px;">Raphael, Anubhav, Paul, and Corey present: Face Off<br>A web platform that utilizes Microsoft's Azure emotion API</div>
 
                 <div class="buttons">
                     <button id="btnCreateGame" class="btn left">CREATE</button>
@@ -66,7 +66,7 @@
             <div class="large-12 cell">
               <div id="bodymovin"></div>
                 <div class="titleWrapper">
-                  <div class="title" style="margin-bottom: 40px;">Raphael, Anubhav, Paul, and Corey present: Face Off</div>
+                  <div class="title" style="margin-bottom: 40px;">Raphael, Anubhav, Paul, and Corey present: Face Off<br>A web platform that utilizes Microsoft's Azure emotion API</div>
 
                   <div class="buttons">
                       <button id="btnCreateGame" class="btn left">CREATE</button>
@@ -178,7 +178,7 @@
         container: elem,
         renderer: 'svg',
         loop: false,
-        autoplay: true,
+        autoplay: false,
         rendererSettings: {
             progressiveLoad:false
         },
@@ -189,6 +189,28 @@
     </script>
   </body>
   <script>
+    function statusChangeCallback(response) {
+      console.log('statusChangeCallback');
+      console.log(response);
+
+      if (response.status === 'connected') {
+        var uid = response.authResponse.userID;
+        var accessToken = response.authResponse.accessToken;
+        console.log(accessToken);
+        testAPI();
+      } else if (response.status === 'not_authorized') {
+        console.log('User has logged into FB but not authorized app');
+      } else {
+        console.log('Something is wrong; not authorized');
+      }
+    }
+
+    function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+    }
+
     window.fbAsyncInit = function() {
       FB.init({
         appId      : '207752326429628',
@@ -199,18 +221,7 @@
       FB.AppEvents.logPageView();
 
       FB.getLoginStatus(function(response) {
-        if (response.status === 'connected') {
-          var uid = response.authResponse.userID;
-          var accessToken = response.authResponse.accessToken;
-        } else if (response.status === 'not_authorized') {
-          console.log('User has logged into FB but not authorized app');
-        } else {
-          console.log('Something is wrong; not authorized');
-        }
-      });
-
-      FB.logout(function(response) {
-
+        statusChangeCallback(response);
       });
 
       FB.Event.subscribe('auth.login', function(response) {
@@ -250,15 +261,10 @@
       });
     }
 
-    function checkLoginState() {
-      FB.getLoginStatus(function(response) {
-        statusChangeCallback(response);
-      });
+    function testAPI() {
+      console.log('testAPI');
     }
 
-    var fb_logout = document.getElementById('logout-btn');
-    fb_logout.addEventListener('click', function() {
-      console.log('User is attempting to logout');
-    });
+
   </script>
 </html>

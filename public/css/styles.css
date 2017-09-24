@@ -120,7 +120,7 @@ html, body {
 }
 
 .createGameWrapper .info{
-    color: #ECFFE0;
+    color: #FF3333;
     font-weight: 400;
     font-size: 2em;
     margin-top: 1.5em;
@@ -133,6 +133,7 @@ html, body {
 
 .info label {
     display: block;
+    font-size: 24px;
 }
 
 .info input {
@@ -148,6 +149,7 @@ html, body {
     border: 1px dotted white;
     border-radius: 10px;
     background: transparent;
+    box-shadow: inset 0px 1px 6px rgba(20,20,20,0.6);
 }
 
 .info input#inputPlayerName {
