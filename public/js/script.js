@@ -56,7 +56,7 @@ var Video = {
   			Video.canvas.setAttribute('height', Video.height);
   			Video.streaming = true;
 
-  			//setInterval(() => Video.processImage(), 200);
+  			setInterval(() => Video.processImage(), 1000);
 		  }
 		}, false);
 	},
@@ -70,11 +70,7 @@ var Video = {
 			Video.ctx.drawImage(Video.video, 0, 0, Video.width, Video.height);
 
 			canvas.toBlob(function (blob) {
-				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?", true);
-				xhr.setRequestHeader("Content-Type","application/octet-stream");
-				xhr.setRequestHeader("Ocp-Apim-Subscription-Key","fbd1c861dad34cc6aa652e6fa30faa46");
-				xhr.send(blob);
+				Video.sendFrame(blob);
 			});
 		}
 	},
@@ -96,6 +92,9 @@ var Video = {
 				}
 			}
 		};
+
+		xhr.open("POST", "/azureblob", true);
+		xhr.send(formData);
 	}
 }
 
@@ -330,7 +329,7 @@ var App = {
        *         YT CODE           *
        ******************************* */
 
-		YT : {
+	YT : {
 
 			/**
 	     * YouTube player reference
@@ -413,7 +412,7 @@ var App = {
 
 				IO.socket.emit('playerSmiled', data);
 	    }
-		},
+	},
 
     /* *******************************
        *         HOST CODE           *
