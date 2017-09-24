@@ -193,7 +193,7 @@
       console.log(statusChangeCallback);
       console.log(response);
 
-      if (res.status === 'connected') {
+      if (response.status === 'connected') {
         var uid = response.authResponse.userID;
         var accessToken = response.authResponse.accessToken;
         testAPI();
