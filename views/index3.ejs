@@ -41,46 +41,15 @@
           </div>
         </div>
       </div>
-
+      
       <div class="large-12 cell" id="gameArea">
         <!-- This is where the templates defined below will be used -->
-        <div class="grid-x align-top">
-          <div class="medium-3 cell leaderboard animated rotateInDownLeft" style="padding: 10px;">
-            <h4 class="text-center">Leaderboard</h4>
-            <table class="responsive text-center" style="width: 100%">
-              <tbody id="scoreTable">
-              </tbody>
-            </table>
-          </div>
-
-          <div class="medium-9 cell text-center animated fadeInRight" style="border-radius: 20px; height: 60vh;">
-            <div id="timer">5</div>
-            <canvas id="canvas" style="display: none;">
-            </canvas>
-            <div id="yt" style="pointer-events: none;">
-              <iframe id="video" src="https://www.youtube.com/embed/5sqPu-x-_tw" frameborder="0"></iframe>
-            </div>
-
-            <div class="flex-child-auto align-stretch" style="">
-              <div class="grid-x">
-                <div class="small-12 cell text-middle">
-                  <ul class="player-list" style="list-style-type: none; display: inline;">
-                    <li><video id="webcam" style="width: 20%; height: ; border: 2px solid rgb(255, 51, 51)"></video></li>
-                    <li><img src="avatars/av1.png"></li>
-                    <li><img src="avatars/av1.png"></li>
-                    <li><img src="avatars/av1.png"></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       <!-- Main Title Screen that appears when the page loads for the first time -->
       <script id="intro-screen-template" type="text/template">
-          <!-- This is where the templates defined below will be used -->
-          <div class="grix-x" style="height: 100vh; background-color:rgb(255,51,51)">
+        <div class="grix-x" style="height: 100vh; background-color:rgb(255,51,51)">
           <div class="large-12 cell">
             <div id="bodymovin"></div>
               <div class="titleWrapper">
@@ -158,9 +127,6 @@
 
           <div class="medium-9 cell text-center animated fadeInRight" style="border-radius: 20px; height: 60vh;">
             <div id="timer">5</div>
-            <div class="camera">
-              <video id="webcam" poster="http://via.placeholder.com/150x150">Video stream not available.</video>
-            </div>
             <canvas id="canvas" style="display: none;">
             </canvas>
             <div id="yt" style="pointer-events: none;">
@@ -169,12 +135,37 @@
 
             <div class="flex-child-auto align-stretch" style="">
               <div class="grid-x">
-                <div class="small-12 cell text-middle" style="">
+                <div class="small-12 cell text-middle">
                   <ul class="player-list" style="list-style-type: none; display: inline;">
+                    <li><video id="webcam" style="width: 20%; height: ; border: 2px solid rgb(255, 51, 51)"></video></li>
+                    <li><img src="avatars/av1.png"></li>
+                    <li><img src="avatars/av1.png"></li>
                     <li><img src="avatars/av1.png"></li>
                   </ul>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </script>
+
+      <!-- This screen appears after game ends -->
+      <script id="end-game-template" type="text/template">
+        <div class="grix-x" style="height: 100vh; background-color:rgb(255,51,51)">
+          <div class="large-12 cell">
+            <div id="bodymovin"></div>
+              <div class="titleWrapper">
+                <div class="title" style="margin-bottom: 40px;">
+                  <p class="animated fadeInUp" id="description2" style="font-size: 30px;">1st Place</p>
+                  <p class="animated fadeInUp" id="description1" style="font-size: 25px;">2nd Place</p>
+                  <p class="animated fadeInUp" id="description3" style="font-size: 22px;">3rd Place</p>
+                </div>
+                <div class="buttons">
+                    <button id="btnMainMenu" class="btn left animated fadeInLeft">Main Menu</button>
+                    <button id="btnNewLobby" class="btn right animated fadeInRight">New Lobby</button>
+                    <div style="clear:both"></div>
+                </div>
+
             </div>
           </div>
         </div>

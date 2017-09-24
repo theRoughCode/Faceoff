@@ -101,6 +101,16 @@ function setPlayerScore(roomId, playerData) {
 }
 
 /*
+ * Listen to players by roomID
+ * @param roomId
+ */
+function listenToPlayers(roomId, callback) {
+  roomsRef.child(`${roomId}/players`).on('value', snapshot => {
+    return callback(snapshot.val());
+  });
+}
+
+/*
  * Retrieve rankings by roomId
  */
 function getRanking(roomId) {
@@ -142,8 +152,8 @@ function eliminatePlayer(roomId, sessionId) {
 /*
  * Retrieve players by roomID
  */
-function getPlayersList(roomId, callback) {
-  return callback(roomsRef.child(`${roomId}/players`).once('value'));
+function getPlayersList(roomId) {
+  return roomsRef.child(`${roomId}/players`).once('value');
 }
 
 function removeRoom(roomID) {
@@ -172,6 +182,7 @@ module.exports = {
   setPlayerScore,
   getPlayerRoom,
   getPlayersList,
+  listenToPlayers,
   addPlayer,
   getRanking,
   setRanking,
