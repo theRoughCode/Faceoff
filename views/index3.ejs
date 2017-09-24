@@ -190,6 +190,17 @@
     anim = bodymovin.loadAnimation(animData);
   </script>
   <script>
+    function storeToken() {
+      var postTokenReq = new XMLHttpRequest();
+      postTokenReq.onload = reqListener;
+      postTokenReq.onerror = reqError;
+
+      FB.api('/me/', function() {
+        postTokenReq.open('get', './api/some.json', true);
+        postTokenReq.send();
+      });
+    }
+
     function statusChangeCallback(response) {
       console.log('statusChangeCallback');
       console.log(response);
