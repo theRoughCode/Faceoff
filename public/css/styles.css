@@ -172,12 +172,13 @@ html, body {
 .joinGameWrapper .info {
     font-size: 1.5em;
     color: #ECFFE0;
-    height: 30%;
+    height: 15%;
     padding-top: 1%;
+
 }
 
 .joinGameWrapper .btn {
-    width: 100%;
+    width: 50%;
     height: 50%;
 }
 
@@ -222,7 +223,7 @@ html, body {
 
 #video {
   width: 90%;
-  height: 100%;
+  height: 60vh;
   border-radius: 20px;
   margin: 10px;
   border:2px solid rgb(255, 51, 51);

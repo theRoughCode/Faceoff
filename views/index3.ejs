@@ -24,8 +24,8 @@
             <div class="top-bar" style="width: 100%" id="responsive-menu">
               <div class="top-bar-left">
                 <ul class="menu">
-                  <li><a class="button" id="quit-btn">Quit Game</a></li>
-                  <li><a href="#" class="button">Browse Games</a></li>
+                  <li><a class="button animated fadeInDown" id="quit-btn">Quit Game</a></li>
+                  <li><a href="#" class="button animated fadeInDown" id="browse-btn">Browse Games</a></li>
                 </ul>
               </div>
               <div class="top-bar-right">
@@ -47,11 +47,11 @@
           <div class="large-12 cell">
             <div id="bodymovin"></div>
               <div class="titleWrapper">
-                <div class="title" style="margin-bottom: 40px;">Raphael, Anubhav, Paul, and Corey present: Face Off<br>A web platform that utilizes Microsoft's Azure emotion API</div>
+                <div class="title" style="margin-bottom: 40px;"><p class="animated fadeInUp" id="description1">Raphael, Anubhav, Paul, and Corey present: Face Off</p><p class="animated fadeInUp" id="description2">A web platform that utilizes Microsoft's Azure emotion API</p></div>
 
                 <div class="buttons">
-                    <button id="btnCreateGame" class="btn left">CREATE</button>
-                    <button id="btnJoinGame" class="btn right">JOIN</button>
+                    <button id="btnCreateGame" class="btn left animated fadeInLeft">CREATE</button>
+                    <button id="btnJoinGame" class="btn right animated fadeInRight">JOIN</button>
                     <div style="clear:both"></div>
                 </div>
 
@@ -64,32 +64,32 @@
       <script id="intro-screen-template" type="text/template">
           <!-- This is where the templates defined below will be used -->
           <div class="grix-x" style="height: 100vh; background-color:rgb(255,51,51)">
-            <div class="large-12 cell">
-              <div id="bodymovin"></div>
-                <div class="titleWrapper">
-                  <div class="title" style="margin-bottom: 40px;">Raphael, Anubhav, Paul, and Corey present: Face Off<br>A web platform that utilizes Microsoft's Azure emotion API</div>
+          <div class="large-12 cell">
+            <div id="bodymovin"></div>
+              <div class="titleWrapper">
+                <div class="title" style="margin-bottom: 40px;"><p class="animated fadeInUp" id="description1">Raphael, Anubhav, Paul, and Corey present: Face Off</p><p class="animated fadeInUp" id="description2">A web platform that utilizes Microsoft's Azure emotion API</p></div>
 
-                  <div class="buttons">
-                      <button id="btnCreateGame" class="btn left">CREATE</button>
-                      <button id="btnJoinGame" class="btn right">JOIN</button>
-                      <div style="clear:both"></div>
-                  </div>
+                <div class="buttons">
+                    <button id="btnCreateGame" class="btn left animated fadeInLeft">CREATE</button>
+                    <button id="btnJoinGame" class="btn right animated fadeInRight">JOIN</button>
+                    <div style="clear:both"></div>
+                </div>
 
-              </div>
             </div>
           </div>
+        </div>
       </script>
 
       <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
       <script id="create-game-template-1" type="text/template">
           <div class="createGameWrapper">
-              <div class="info">
+              <div class="info animated fadeInUp" id="nameField">
                   <label for="inputHostName">Your Name:</label>
                   <input id="inputHostName" type="text" />
               </div>
 
               <div class="info buttons">
-                  <button id="btnHost" class="btn">Host Game</button>
+                  <button id="btnHost" class="btn animated fadeInUp">Host Game</button>
               </div>
           </div>
       </script>
@@ -98,11 +98,11 @@
       <script id="create-game-template-2" type="text/template">
           <div class="createGameWrapper">
 
-              <div class="info">Open this site on your mobile device:</div>
-              <div id="gameURL" class="infoBig">Error!</div>
+              <div class="info animated fadeInUp">Open this site on your mobile device:</div>
+              <div id="gameURL" class="infoBig animated fadeIn">Error!</div>
 
-              <div class="info">Then click <strong>JOIN</strong> and <br/> enter the following Game ID:</div>
-              <div id="spanNewGameCode" class="gameId">Error!</div>
+              <div class="info animated fadeInUp">Then click <strong>JOIN</strong> and <br/> enter the following Game ID:</div>
+              <div id="spanNewGameCode" class="gameId animated fadeIn">Error!</div>
 
               <div id="playersWaiting"></div>
           </div>
@@ -111,17 +111,17 @@
       <!-- This screen appears when a player clicks "JOIN" on the Title Screen -->
       <script id="join-game-template" type="text/template">
           <div class="joinGameWrapper">
-              <div class="info">
+              <div class="info animated fadeIn">
                   <label for="inputPlayerName">Your Name:</label>
                   <input id="inputPlayerName" type="text" />
               </div>
 
-              <div class="info">
+              <div class="info animated fadeIn">
                   <label for="inputGameId">Game ID:</label>
                   <input id="inputGameId" type="text"/>
               </div>
 
-              <div class="info buttons">
+              <div class="info buttons animated fadeIn">
                   <button id="btnStart" class="btn">Start</button>
                   <div id="playerWaitingMessage"></div>
               </div>
@@ -131,14 +131,14 @@
       <!-- This is the 'Host' screen. It displays the word for each player to match -->
       <script id="game-template" type="text/template">
         <div class="grid-x align-top">
-          <div class="medium-3 cell leaderboard" style="padding: 10px;">
+          <div class="medium-3 cell leaderboard animated rotateInDownLeft" style="padding: 10px;">
             <h4 class="text-center">Leaderboard</h4>
             <table class="responsive text-center" style="width: 100%">
               <tbody id="scoreTable">
               </tbody>
             </table>
           </div>
-          <div class="medium-9 cell text-center" style="border-radius: 20px; height: 60vh;">
+          <div class="medium-9 cell text-center animated fadeInRight" style="border-radius: 20px; height: 60vh;">
             <div id="timer">5</div>
             <div class="camera">
               <video id="webcam" poster="http://via.placeholder.com/150x150">Video stream not available.</video>
