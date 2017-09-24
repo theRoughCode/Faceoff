@@ -772,7 +772,7 @@ var App = {
     countDown : function(el, startTime, callback) {
 
         // Display the starting time on the screen.
-        el.innerHTML = startTime;
+        el.innerHTML = startTime + " seconds until the game starts!";
 
         // console.log('Starting Countdown...');
 
@@ -782,13 +782,19 @@ var App = {
         // Decrement the displayed timer value on each 'tick'
         function countItDown(){
             startTime -= 1
-            el.innerHTML = startTime;
+						if (startTime == 1)
+							el.innerHTML = startTime + " second until the game starts";
+						else
+							el.innerHTML = startTime + " seconds until the game starts";
 
             if( startTime <= 0 ){
                 // console.log('Countdown Finished.');
 
                 // Stop the timer and do the callback.
                 clearInterval(timer);
+
+								// clear the timer
+								el.innerHTML = "";
                 callback();
                 return;
             }
