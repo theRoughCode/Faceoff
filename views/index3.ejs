@@ -114,12 +114,6 @@
                   <label for="inputPlayerName">Your Name:</label>
                   <input id="inputPlayerName" type="text" />
               </div>
-              <canvas id="canvas" style="display: none;">
-              </canvas>
-              <div id="yt">
-                <iframe id="video" src="https://www.youtube.com/embed/5sqPu-x-_tw" frameborder="0"></iframe>
-              </div>
-            </div>
 
               <div class="info">
                   <label for="inputGameId">Game ID:</label>
@@ -139,21 +133,20 @@
           <div class="medium-3 cell leaderboard" style="padding: 10px;">
             <h4 class="text-center">Leaderboard</h4>
             <table class="responsive text-center" style="width: 100%">
-              <tbody>
-                <tr>
-                  <th>Rank</th>
-                  <th>Name</th>
-                  <th>Score</th>
-                </tr>
-                <tr id="scoreTable"></tr>
+              <tbody id="scoreTable">
               </tbody>
             </table>
           </div>
           <div class="medium-9 cell text-center" style="border-radius: 20px; height: 60vh;">
+            <div id="timer">5</div>
             <div class="camera">
               <video id="webcam" poster="http://via.placeholder.com/150x150">Video stream not available.</video>
             </div>
-            <iframe id="video" src="https://www.youtube.com/embed/5sqPu-x-_tw" frameborder="0"></iframe>
+            <canvas id="canvas" style="display: none;">
+            </canvas>
+            <div id="yt">
+              <iframe id="video" src="https://www.youtube.com/embed/5sqPu-x-_tw" frameborder="0"></iframe>
+            </div>
 
             <div class="flex-child-auto align-stretch" style="">
             <div class="grid-x">
