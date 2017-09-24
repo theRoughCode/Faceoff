@@ -189,9 +189,9 @@
     </script>
   </body>
   <script>
-    function statusChangeCallback(res) {
+    function statusChangeCallback(response) {
       console.log(statusChangeCallback);
-      console.log(res);
+      console.log(response);
 
       if (res.status === 'connected') {
         var uid = response.authResponse.userID;
