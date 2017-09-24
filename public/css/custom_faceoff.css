@@ -138,3 +138,8 @@ table.responsive {
 	-moz-animation-delay: 5s;
 	-o-animation-delay: 5s;
 }
+
+iframe {
+	border-radius: 20px;
+	margin-top: 15px;
+}
