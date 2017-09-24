@@ -2,17 +2,17 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <!-- Ensure that everything scales appropriately on a mobile device
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">-->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="/socket.io/socket.io.js"></script>
     <title>FaceOff</title>
     <!-- Let's borrow a cool looking Font from Google -->
-    <link href='https://fonts.googleapis.com/css?family=Quicksand:300,400,700' rel='stylesheet' type='text/css'>
-    <link href="css/styles.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../public/css/styles.css">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Quicksand:300,400,700" />
     <link rel="stylesheet" type="text/css" href="../public/css/foundation.min.css" />
-    <link rel="stylesheet" type="text/css" href="../public/css/custom_faceoff.css" />
     <link rel="stylesheet" type="text/css" href="../public/css/responsive-tables.css" />
+    <link rel="stylesheet" type="text/css" href="../public/css/custom_faceoff.css" />
+    <script type="text/javascript" src="../public/js/bodymovin.js"></script>
+    <script src="../public/js/jquery.js"></script>
   </head>
   <body>
     <div class="grid-x align-top" style="height: 100vh;">
@@ -37,116 +37,201 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="large-12 cell" id="gameArea">
-          <!-- This is where the templates defined below will be used -->
-        </div>
-
-        <!-- Main Title Screen that appears when the page loads for the first time -->
-        <script id="intro-screen-template" type="text/template">
-
+      <div class="large-12 cell" id="gameArea">
+        <!-- This is where the templates defined below will be used -->
+        <div class="grix-x" style="height: 100vh; background-color:rgb(255,51,51)">
+          <div class="large-12 cell">
+            <div id="bodymovin"></div>
             <div class="titleWrapper">
+              <div class="title" style="margin-bottom: 40px;">Raphael, Anubhav, Paul, and Corey present: Face Off</div>
+              
 
-                <div class="title">Face-Off</div>
+              <div class="buttons">
 
-                <div class="buttons">
-
-                    <button id="btnCreateGame" class="btn left">CREATE</button>
-                    <button id="btnJoinGame" class="btn right">JOIN</button>
-                    <div style="clear:both"></div>
-                </div>
-
-            </div>
-
-        </script>
-
-        <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
-        <script id="create-game-template-1" type="text/template">
-            <div class="createGameWrapper">
-                <div class="info">
-                    <label for="inputHostName">Your Name:</label>
-                    <input id="inputHostName" type="text" />
-                </div>
-
-                <div class="info buttons">
-                    <button id="btnHost" class="btn">Host Game</button>
-                </div>
-            </div>
-        </script>
-
-        <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
-        <script id="create-game-template-2" type="text/template">
-            <div class="createGameWrapper">
-
-                <div class="info">Open this site on your mobile device:</div>
-                <div id="gameURL" class="infoBig">Error!</div>
-
-                <div class="info">Then click <strong>JOIN</strong> and <br/> enter the following Game ID:</div>
-                <div id="spanNewGameCode" class="gameId">Error!</div>
-
-                <div id="playersWaiting"></div>
-            </div>
-        </script>
-
-        <!-- This screen appears when a player clicks "JOIN" on the Title Screen -->
-        <script id="join-game-template" type="text/template">
-            <div class="joinGameWrapper">
-                <div class="info">
-                    <label for="inputPlayerName">Your Name:</label>
-                    <input id="inputPlayerName" type="text" />
-                </div>
-
-                <div class="info">
-                    <label for="inputGameId">Game ID:</label>
-                    <input id="inputGameId" type="text"/>
-                </div>
-
-                <div class="info buttons">
-                    <button id="btnStart" class="btn">Start</button>
-                    <div id="playerWaitingMessage"></div>
-                    <div id="playersWaiting"></div>
-                </div>
-            </div>
-        </script>
-
-        <!-- This is the 'Host' screen. It displays the word for each player to match -->
-        <script id="game-template" type="text/template">
-          <div class="grid-x align-middle">
-            <div id="timer">5</div>
-            <div class="medium-3 cell leaderboard" style="padding: 10px;">
-              <h4 class="text-center">Leaderboard</h4>
-              <table class="responsive text-center" style="width: 100%">
-                <tbody id="scoreTable">
-                </tbody>
-              </table>
-            </div>
-            <div class="medium-9 cell text-center" style="border-radius: 20px; height: 60vh;">
-              <div class="camera">
-                <video id="webcam">Video stream not available.</video>
+                  <button id="btnCreateGame" class="btn left">CREATE</button>
+                  <button id="btnJoinGame" class="btn right">JOIN</button>
+                  <div style="clear:both"></div>
               </div>
-              <iframe id="video" src="https://www.youtube.com/embed/5sqPu-x-_tw" frameborder="0"></iframe>
-            </div>
+
+          </div>
+          </div>
+        </div>
+        
+      </div>
+
+      <!-- Main Title Screen that appears when the page loads for the first time -->
+      <script id="intro-screen-template" type="text/template">
+
+          <div class="grix-x">
+          <div class="large-12 cell" style="height: 20vh; background-color:rgb(255, 51, 51)">
+            <div id="bodymovin"></div>
+          </div>
+        </div>
+        <div class="titleWrapper">
+
+              <div class="title">Face-Off</div>
+
+              <div class="buttons">
+
+                  <button id="btnCreateGame" class="btn left">CREATE</button>
+                  <button id="btnJoinGame" class="btn right">JOIN</button>
+                  <div style="clear:both"></div>
+              </div>
+
           </div>
 
-          <div class="flex-child-auto align-stretch" style="">
+      </script>
+
+      <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
+      <script id="create-game-template-1" type="text/template">
+          <div class="createGameWrapper">
+              <div class="info">
+                  <label for="inputHostName">Your Name:</label>
+                  <input id="inputHostName" type="text" />
+              </div>
+
+              <div class="info buttons">
+                  <button id="btnHost" class="btn">Host Game</button>
+              </div>
+          </div>
+      </script>
+
+      <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
+      <script id="create-game-template-2" type="text/template">
+          <div class="createGameWrapper">
+
+              <div class="info">Open this site on your mobile device:</div>
+              <div id="gameURL" class="infoBig">Error!</div>
+
+              <div class="info">Then click <strong>JOIN</strong> and <br/> enter the following Game ID:</div>
+              <div id="spanNewGameCode" class="gameId">Error!</div>
+
+              <div id="playersWaiting"></div>
+          </div>
+      </script>
+
+      <!-- This screen appears when a player clicks "JOIN" on the Title Screen -->
+      <script id="join-game-template" type="text/template">
+          <div class="joinGameWrapper">
+              <div class="info">
+                  <label for="inputPlayerName">Your Name:</label>
+                  <input id="inputPlayerName" type="text" />
+              </div>
+
+              <div class="info">
+                  <label for="inputGameId">Game ID:</label>
+                  <input id="inputGameId" type="text"/>
+              </div>
+
+              <div class="info buttons">
+                  <button id="btnStart" class="btn">Start</button>
+                  <div id="playerWaitingMessage"></div>
+              </div>
+          </div>
+      </script>
+
+      <!-- This is the 'Host' screen. It displays the word for each player to match -->
+      <script id="game-template" type="text/template">
+        <div class="grid-x align-top">
+          <div class="medium-3 cell leaderboard" style="padding: 10px;">
+            <h4 class="text-center">Leaderboard</h4>
+            <table class="responsive text-center" style="width: 100%">
+              <tbody>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Score</th>
+                </tr>
+                <tr id="scoreTable"></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="medium-9 cell text-center" style="border-radius: 20px; height: 60vh;">
+            <div class="camera">
+              <video id="webcam" poster="http://via.placeholder.com/150x150">Video stream not available.</video>
+            </div>
+            <iframe id="video" src="https://www.youtube.com/embed/5sqPu-x-_tw" frameborder="0"></iframe>
+
+            <div class="flex-child-auto align-stretch" style="">
             <div class="grid-x">
               <div class="small-12 cell text-middle" style="">
-                <ul class="player-list" style="list-style-type: none">
-                  <li><img src="http://via.placeholder.com/40x40" ></li>
+                <ul class="player-list" style="list-style-type: none; display: inline;">
+                  <li><img src="http://via.placeholder.com/150x150" ></li>
                 </ul>
               </div>
             </div>
           </div>
-        </script>
-
-      </div>
+          </div>
+        </div>
+      </script>
 
     </div>
+
+    </div>
+
+    <!-- Bodymovin script -->
+    <script>
+
+    var anim;
+    var elem = document.getElementById('bodymovin')
+    var animData = {
+        container: elem,
+        renderer: 'svg',
+        loop: false,
+        autoplay: true,
+        rendererSettings: {
+            progressiveLoad:false
+        },
+        path: 'json/data.json'
+    };
+    anim = bodymovin.loadAnimation(animData);
+
+    </script>
   </body>
   <!-- script.js is where all the client-side game logic -->
   <script src="../public/js/script.js"></script>
-  <script src="../public/js/jquery.js"></script>
+  
   <script src="../public/js/what-input.js"></script>
   <script src="../public/js/foundation.min.js"></script>
   <script src="../public/js/custom_faceoff.js"></script>
+  <script>
+  const users = [
+    {
+      name: 'Player 1',
+      score: 214,
+    },
+    {
+      name: 'Player 2',
+      score: 217,
+    },
+    {
+      name: 'Player 3',
+      score: 234,
+    },
+    {
+      name: 'Player 4',
+      score: 400,
+    }
+  ];
+
+  const scoreTable = document.querySelector('#scoreTable');
+  users.forEach((user, index) => {
+    var td1 = document.createElement('td');
+    td1.style["text-align"] = 'left';
+    td1.innerHTML = index + 1;
+    scoreTable.appendChild(td1);
+
+    var td2 = document.createElement('td');
+    td2.style["text-align"] = 'center';
+    td2.innerHTML = user.name;
+    scoreTable.appendChild(td2);
+
+    var td3 = document.createElement('td');
+    td3.style["text-align"] = 'right';
+    td3.innerHTML = user.score;
+    scoreTable.appendChild(td3);
+  });
+  </script>
 </html>

@@ -54,24 +54,11 @@
 				fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));
 
-			function reqListener() {
-				var data = JSON.parse(this.responseText);
-				console.log(data);
-			}
-
-			function reqError(err) {
-				console.log('Fetch Error :-S', err);
-			}
-
 			function login() {
 				FB.login(function(response) {
 					if (response.status === 'connected') {
 						console.log(response.authResponse.accessToken);
-						var fbConnected = new XMLHttpRequest();
-						fbConnected.onload = reqListener;
-						fbConnected.onError = reqError;
-						fbConnected.open('get', './fbconnected', true);
-						fbConnected.send();
+						document.getElementById('fb-btn').style.display = 'none';
 					} else {
 						console.log('Not authenicated');
 					}
@@ -86,7 +73,7 @@
 
 		<!-- FB Login Button -->
 		<section class="float-center">
-			<fb:login-button id="fb-btn" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="Login with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></fb:login-button>
+			<fb:login-button id="fb-btn" class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></fb:login-button>
 		</section>
 
 		<main>

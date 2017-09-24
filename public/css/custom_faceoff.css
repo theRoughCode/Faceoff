@@ -87,3 +87,13 @@ table.responsive {
 .player-list li {
 	display: inline
 }
+
+#bodymovin{
+    width:100%;
+    height:100%;
+    display:block;
+    overflow: hidden;
+    transform: translate3d(0,0,0);
+    text-align: center;
+    opacity: 1;
+}
