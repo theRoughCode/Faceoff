@@ -16,9 +16,9 @@ function handleResult(score) {
  *    after the API code downloads.
  */
 function onYouTubeIframeAPIReady() {
-	console.log("3");
+	console.log('url: ' + App.YT.url);
 	App.YT.player = new YT.Player('yt', {
-		videoId: '5sqPu-x-_tw',
+		videoId: App.YT.url,
 		events: {
 			'onReady': App.YT.onYtReady,
 			'onStateChange': App.YT.onYTStateChange
@@ -76,6 +76,9 @@ var Video = {
 				xhr.setRequestHeader("Content-Type","application/octet-stream");
 				xhr.setRequestHeader("Ocp-Apim-Subscription-Key","fbd1c861dad34cc6aa652e6fa30faa46");
 				xhr.send(blob);
+			}
+		}
+	}
 
 	sendFrame : function(blob) {
 		var formData = new FormData();
@@ -95,7 +98,6 @@ var Video = {
 			}
 		};
 	}
-};
 
 /**
 * All the code relevant to Socket.IO is collected in the IO namespace.
@@ -179,7 +181,7 @@ var IO = {
 
 		// Load the video for the Host and Player
 		//App.Player.loadVideo(data);
-		App.YT.loadYT();
+		App.YT.loadYT(data.url);
 	},
 
 	/**
@@ -340,12 +342,14 @@ var App = {
 			/**
 	     * Load YouTube player
 	     */
-	    loadYT: function() {
+	    loadYT: function(url) {
 				var tag = document.createElement('script');
 
 	      tag.src = "https://www.youtube.com/iframe_api";
 	      var firstScriptTag = document.getElementsByTagName('script')[0];
 	      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+				App.YT.url = url;
 
 				console.log("2");
 	    },
