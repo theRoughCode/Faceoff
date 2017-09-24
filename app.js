@@ -26,4 +26,5 @@ app.use(express.static(path.join(__dirname, '/views')));
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
+
 module.exports = app;
