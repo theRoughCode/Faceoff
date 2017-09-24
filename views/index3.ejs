@@ -189,6 +189,27 @@
     </script>
   </body>
   <script>
+    function statusChangeCallback(res) {
+      console.log(statusChangeCallback);
+      console.log(res);
+
+      if (res.status === 'connected') {
+        var uid = response.authResponse.userID;
+        var accessToken = response.authResponse.accessToken;
+        testAPI();
+      } else if (response.status === 'not_authorized') {
+        console.log('User has logged into FB but not authorized app');
+      } else {
+        console.log('Something is wrong; not authorized');
+      }
+    }
+
+    function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+    }
+
     window.fbAsyncInit = function() {
       FB.init({
         appId      : '207752326429628',
@@ -199,18 +220,7 @@
       FB.AppEvents.logPageView();
 
       FB.getLoginStatus(function(response) {
-        if (response.status === 'connected') {
-          var uid = response.authResponse.userID;
-          var accessToken = response.authResponse.accessToken;
-        } else if (response.status === 'not_authorized') {
-          console.log('User has logged into FB but not authorized app');
-        } else {
-          console.log('Something is wrong; not authorized');
-        }
-      });
-
-      FB.logout(function(response) {
-
+        statusChangeCallback(response);
       });
 
       FB.Event.subscribe('auth.login', function(response) {
@@ -247,12 +257,6 @@
         } else {
           console.log('Not authenicated');
         }
-      });
-    }
-
-    function checkLoginState() {
-      FB.getLoginStatus(function(response) {
-        statusChangeCallback(response);
       });
     }
 
