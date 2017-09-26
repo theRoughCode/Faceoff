@@ -158,7 +158,6 @@ var IO = {
 	onConnected : function(data) {
 		// Cache a copy of the client's socket.IO session ID on the App
 		App.mySocketId = IO.socket.sessionid;
-		console.log(data.message);
 	},
 
 	/**
@@ -250,11 +249,10 @@ var App = {
      */
     mySocketId: '',
 
-		/**
-     * Identifies the current round. Starts at 0 because it corresponds
-     * to the array of word data stored on the server.
+    /**
+     * Contains references to player data
      */
-    currentRound: 0,
+    myName : '',
 
 		/**
      * Identifies the nubmer of Players (2 - 5)
@@ -441,7 +439,7 @@ var App = {
 
 				const data = {
 					gameId : App.gameId,
-					playerName : App[App.myRole].myName,
+					playerName : App.myName,
 					sessionId : App.mySocketId,
 					elapsedTime : elapsedTime
 				};
@@ -454,10 +452,6 @@ var App = {
        *         HOST CODE           *
        ******************************* */
     Host : {
-        /**
-         * Contains references to player data
-         */
-        myName : '',
 
         /**
          * Flag to indicate if a new game is starting.
@@ -488,7 +482,6 @@ var App = {
          * @param data{{ gameId: int, mySocketId: * }}
          */
         gameInit: function (data) {
-					console.log(data);
             App.gameId = data.gameId;
             App.mySocketId = data.mySocketId;
             App.myRole = 'Host';
@@ -498,7 +491,7 @@ var App = {
             // collect data to send to the server
             var data = {
                 gameId : App.gameId,
-                playerName : App.Host.myName,
+                playerName : App.myName,
                 sessionId : App.mySocketId,
 								numPlayers : App.numPlayers
             };
@@ -508,7 +501,7 @@ var App = {
             // Send the host data
             IO.socket.emit('addRoom', data);
 
-            console.log("Game started with ID: " + App.gameId + ' by host: ' + App.Host.myName);
+            console.log("Game started with ID: " + App.gameId + ' by host: ' + App.myName);
         },
 
         /**
@@ -538,7 +531,7 @@ var App = {
 
            // Set the appropriate properties for the current player.
            App.myRole = 'Host';
-           App.Host.myName = data.hostName;
+           App.myName = data.hostName;
          },
 
         /**
@@ -609,11 +602,6 @@ var App = {
         hostSocketId: '',
 
         /**
-         * The player's name entered on the 'Join' screen.
-         */
-        myName: '',
-
-        /**
          * Click handler for the 'JOIN' button
          */
         onJoinClick: function () {
@@ -628,12 +616,10 @@ var App = {
          * and clicked Start.
          */
         onPlayerStartClick: function() {
-            console.log('Player clicked "Start"');
-
             // collect data to send to the server
             var data = {
                 gameId : document.querySelector('#inputGameId').value,
-                playerName : document.querySelector('#inputPlayerName').value || 'anon',
+                playerName : document.querySelector('#inputPlayerName').value || 'Anonymous',
                 isHost : false
             };
 
@@ -642,26 +628,7 @@ var App = {
 
             // Set the appropriate properties for the current player.
             App.myRole = 'Player';
-            App.Player.myName = data.playerName;
-        },
-
-        /**
-         *  Click handler for the Player hitting a word in the word list.
-         */
-        onPlayerAnswerClick: function() {
-            // console.log('Clicked Answer Button');
-            var btn = this;      // the tapped button
-            var answer = btn.value; // The tapped word
-
-            // Send the player info and tapped word to the server so
-            // the host can check the answer.
-            var data = {
-                gameId: App.gameId,
-                playerId: App.mySocketId,
-                answer: answer,
-                round: App.currentRound
-            }
-            IO.socket.emit('playerAnswer',data);
+            App.myName = data.playerName;
         },
 
         /**
@@ -671,10 +638,9 @@ var App = {
         onPlayerRestart : function() {
             var data = {
                 gameId : App.gameId,
-                playerName : App.Player.myName
+                playerName : App.myName
             }
             IO.socket.emit('playerRestart',data);
-            App.currentRound = 0;
             document.querySelector('#gameArea').innerHTML = "<h3>Waiting on host to start new game.</h3>";
         },
 
