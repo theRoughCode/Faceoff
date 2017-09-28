@@ -24,7 +24,7 @@ exports.initGame = function(sio, socket){
 
     // Player Events
     gameSocket.on('playerJoinGame', playerJoinGame);
-    gameSocket.on('playerSmiled', playerSmiled);
+    gameSocket.on('playerDone', playerDone);
 }
 
 
@@ -43,8 +43,6 @@ function hostCreateNewGame(data) {
     var thisGameId = ( Math.random() * 100000 ) | 0;
 
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
-    console.log('hostCreateNewGame');
-    console.log(data);
     this.emit('newGameCreated', {
       gameId: thisGameId,
       mySocketId: this.id,
@@ -113,7 +111,7 @@ function populateTable(gameId) {
         io.sockets.in(gameId).emit('populateTable', arr)));
     database.listenToRanking(gameId, players =>
       formatScores(players, arr => {
-        io.sockets.in(gameId).emit('populateTable', arr);
+        io.sockets.in(gameId).emit('updateTable', arr);
 
         isRoundOver(gameId, res => {
           if(!res.length) return io.sockets.in(gameId).emit('gameOver', arr);
@@ -196,7 +194,7 @@ function playerJoinGame(data) {
 
     } else {
         // Otherwise, send an error message back to the player.
-        this.emit('errorMsg',{message: "This room does not exist."} );
+        this.emit('errorMsg', {message: "This room does not exist."} );
     }
 }
 
@@ -204,7 +202,7 @@ function playerJoinGame(data) {
  * A player has tapped a word in the word list.
  * @param data gameId, playerName, sessionId, elapsedTime (in seconds)
  */
-function playerSmiled(data) {
+function playerDone(data) {
     database.updateScore(data.gameId, data.playerName, Math.round(data.elapsedTime), data.sessionId);
 }
 

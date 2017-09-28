@@ -1,5 +1,6 @@
 const THRESHOLD = 0.75;
 var intervalClearID; // bad but since setInterval what returns the ID, there's not much you can do
+var playPromise;
 
 function handleResult(score) {
 	if (score > THRESHOLD) {
@@ -27,9 +28,7 @@ function onPlayerReady(event) {
  *    the player should play for six seconds and then stop.
  */
 function onPlayerStateChange(event) {
-	if (event.data == YT.PlayerState.PLAYING && !App.YT.done) {
-		App.YT.done = true;
-	}
+	if (event.data == YT.PlayerState.PLAYING && !App.YT.done) App.videoEnded();
 }
 
 /**
@@ -64,7 +63,7 @@ var Video = {
 		navigator.mediaDevices.getUserMedia({ video: true, audio: false })
 		  .then(stream => {
 			  Video.video.src = window.URL.createObjectURL(stream);
-			  Video.video.play();
+			  playPromise = Video.video.play();
 		  })
 		  .catch(err => console.log("An error occured! " + err));
 
@@ -148,6 +147,7 @@ var IO = {
 		IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
 		IO.socket.on('beginNewGame', IO.beginNewGame);
 		IO.socket.on('populateTable', IO.populateTable);
+		IO.socket.on('updateTable', IO.updateTable);
 		IO.socket.on('playVideo', IO.playVideo);
 		IO.socket.on('gameOver', IO.gameOver);
 	},
@@ -179,6 +179,8 @@ var IO = {
 		//
 		// So on the 'host' browser window, the App.Host.updateWaitingScreen function is called.
 		// And on the player's browser, App.Player.updateWaitingScreen is called.
+		document.removeEventListener('keypress', App.Player.onPlayerStartClick);
+		App.mySocketId = data.mySocketId;
 		App[App.myRole].updateWaitingScreen(data);
 	},
 
@@ -190,13 +192,21 @@ var IO = {
 		App.Player.gameCountdown(data);
 	},
 
-	/**		 	/**
+	/**
 	 * Populate leaderboards
 	 * @param data
 	 */
 	populateTable : function(players) {
 		App.populateTable(players);
 		Video.startup();
+	},
+
+	/**
+	 * Update leaderboards
+	 * @param data
+	 */
+	updateTable : function(players) {
+		if (App.YT.started) App.updateTable(players);
 	},
 
 	/**
@@ -327,16 +337,19 @@ var App = {
 			users.forEach((user, index) => {
 				var tr = document.createElement('tr');
 				var td1 = document.createElement('td');
+				td1.setAttribute('id', 'rank');
 				td1.style["text-align"] = 'left';
 				td1.innerHTML = index + 1;
 				tr.appendChild(td1);
 
 				var td2 = document.createElement('td');
+				td2.setAttribute('id', 'name');
 				td2.style["text-align"] = 'center';
 				td2.innerHTML = user.name;
 				tr.appendChild(td2);
 
 				var td3 = document.createElement('td');
+				td3.setAttribute('id', 'score');
 				td3.style["text-align"] = 'right';
 				td3.innerHTML = user.score;
 				tr.appendChild(td3);
@@ -363,11 +376,42 @@ var App = {
     },
 
 		/**
+     * Update score table
+     */
+    updateTable: function(users) {
+			if (!users) return;
+
+			const scoreTable = document.querySelector('#scoreTable');
+			var playerRows = scoreTable.querySelectorAll('tr');
+
+			users.forEach((user, index) => {
+				var row = playerRows[index + 1];
+
+				row.querySelector('#name').innerHTML = user.name;
+				row.querySelector('#score').innerHTML = user.score;
+			});
+    },
+
+		/**
      * Show the initial Anagrammatix Title Screen
      * (with Start and Join buttons)
      */
     smiled: function() {
 			App.YT.stopVideo();
+    },
+
+		/**
+     * Video ended
+     */
+    videoEnded: function() {
+			App.YT.done = true;
+			const data = {
+				gameId : App.gameId,
+				playerName : App.myName,
+				sessionId : App.mySocketId,
+				elapsedTime : App.YT.player.getCurrentTime();
+			};
+			IO.socket.emit('playerDone', data);
     },
 
 		/**
@@ -444,7 +488,7 @@ var App = {
 					elapsedTime : elapsedTime
 				};
 
-				IO.socket.emit('playerSmiled', data);
+				IO.socket.emit('playerDone', data);
 	    }
 	},
 
@@ -512,20 +556,25 @@ var App = {
             App.gameArea.innerHTML = App.templateNewGame;
 
             document.querySelector('#btnHost').addEventListener('click', App.Host.onHostClick);
+						document.addEventListener('keypress', App.Host.onHostClick);
         },
 
         /*
          *  Host lobby
          */
-         onHostClick : function() {
+         onHostClick : function(e) {
+					 // Check if enter key
+					 if (e.type === 'keypress') {
+						 if (e.keyCode !== 13) return;
+						 else document.removeEventListener('keypress', App.Player.onHostClick);
+					 }
+
            // collect data to send to the server
-					 App.numPlayers = document.querySelector('#numPlayers').value;
+					 App.numPlayers = parseInt(document.querySelector('#numPlayers').value);
            var data = {
                hostName : document.querySelector('#inputHostName').value || 'anon',
 							 numPlayers : App.numPlayers
            };
-					 console.log("onHostClick");
-					 console.log(data);
            // Send the gameId and playerName to the server
            IO.socket.emit('hostCreateNewGame', data);
 
@@ -567,12 +616,8 @@ var App = {
 
             // Increment the number of players in the room
             App.Host.numPlayersInRoom += 1;
-
-						console.log(App.Host.numPlayersInRoom);
-						console.log(App.numPlayers);
-						console.log(parseInt(App.Host.numPlayersInRoom) === parseInt(App.numPlayers));
             // If two players have joined, start the game!
-            if (parseInt(App.Host.numPlayersInRoom) === parseInt(App.numPlayers)) {
+            if (App.Host.numPlayersInRoom === App.numPlayers) {
                 console.log('Room is full. Almost ready!');
 
                 // Let the server know that two players are present.
@@ -609,13 +654,17 @@ var App = {
             App.gameArea.innerHTML = App.templateJoinGame;
 
             document.querySelector('#btnStart').addEventListener('click', App.Player.onPlayerStartClick);
+						document.addEventListener('keypress', App.Player.onPlayerStartClick);
         },
 
         /**
          * The player entered their name and gameId (hopefully)
          * and clicked Start.
          */
-        onPlayerStartClick: function() {
+        onPlayerStartClick: function(e) {
+						// Check if enter key
+						if (e.type === 'keypress' && e.keyCode !== 13) return;
+
             // collect data to send to the server
             var data = {
                 gameId : document.querySelector('#inputGameId').value,
