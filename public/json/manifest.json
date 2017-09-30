@@ -1,0 +1,10 @@
+{
+	"short_name": "FaceOff",
+	"name": "FaceOff Web App",
+	"start_url": "https://facemeoff.com/",
+	"scope": "/",
+	"display": "standalone",
+	"display": "fullscreen",
+	"theme_color": "#FF3333",
+	"background_color": "#FF3333"
+}
