@@ -409,7 +409,7 @@ var App = {
 				gameId : App.gameId,
 				playerName : App.myName,
 				sessionId : App.mySocketId,
-				elapsedTime : App.YT.player.getCurrentTime();
+				elapsedTime : App.YT.player.getCurrentTime()
 			};
 			IO.socket.emit('playerDone', data);
     },
